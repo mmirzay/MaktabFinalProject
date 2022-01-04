@@ -1,6 +1,5 @@
 package com.project.my.homeservicessystem.backend.entities.services;
 
-import com.project.my.homeservicessystem.backend.entities.users.ServiceProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +19,6 @@ public class Service {
 	private String title;
 	private double basePrice;
 	private String description;
-	@ManyToOne
-	private ServiceProvider provider;
 	@ManyToOne
 	private ServiceCategory category;
 }

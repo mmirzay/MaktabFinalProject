@@ -1,6 +1,6 @@
 package com.project.my.homeservicessystem.backend.entities.services;
 
-import com.project.my.homeservicessystem.backend.entities.users.ServiceProvider;
+import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class ServiceOffer {
 	private double price;
 	private int durationInHours;
 	@ManyToOne
-	private ServiceProvider provider;
+	private Provider provider;
 	@ManyToOne
 	private ServiceRequest request;
 }
