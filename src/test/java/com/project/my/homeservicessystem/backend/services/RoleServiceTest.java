@@ -33,7 +33,7 @@ class RoleServiceTest {
         service.addRole(admin);
 
         Role duplicateName = new Role("Admin");
-        assertThrows(Exception.class,()-> service.addRole(duplicateName));
+        assertThrows(Exception.class, () -> service.addRole(duplicateName));
     }
 
     @Test
@@ -50,7 +50,7 @@ class RoleServiceTest {
         Role foundByName = service.getRoleByName(name).get(0);
         assertNotNull(foundByName);
         List<Role> notFound = service.getRoleByName("somethingNotExist");
-        assertEquals(notFound.size(),0);
+        assertEquals(notFound.size(), 0);
     }
 
     @Test
@@ -63,7 +63,7 @@ class RoleServiceTest {
         assertTrue(service.updateRole(foundByName));
         Role updated = service.getRoleByName("Customer").get(0);
         assertNotNull(updated);
-        assertEquals(updated.getName(),"Customer");
+        assertEquals(updated.getName(), "Customer");
 
         Role invalidId = new Role("Not Exist");
         assertFalse(service.updateRole(invalidId));
@@ -78,10 +78,10 @@ class RoleServiceTest {
         Role toRemove = new Role("ToRemove");
         service.addRole(toRemove);
         List<Role> allRoles = service.getAllRoles();
-        assertEquals(allRoles.size(),4);
+        assertEquals(allRoles.size(), 4);
         assertTrue(service.deleteRoleById(toRemove.getId()));
         allRoles = service.getAllRoles();
-        assertEquals(allRoles.size(),3);
+        assertEquals(allRoles.size(), 3);
         assertFalse(service.deleteRoleById(1234L));
     }
 }
