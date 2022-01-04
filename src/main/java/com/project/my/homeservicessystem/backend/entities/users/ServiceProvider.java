@@ -1,11 +1,19 @@
 package com.project.my.homeservicessystem.backend.entities.users;
 
-import com.project.my.homeservicessystem.backend.entities.services.Service;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Set;
+import javax.persistence.Entity;
 
+
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class ServiceProvider extends User {
 	private String profilePhotoUrl;
 	private long score;
-	private Set<Service> services;
 }

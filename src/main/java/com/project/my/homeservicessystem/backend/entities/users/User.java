@@ -1,15 +1,29 @@
 package com.project.my.homeservicessystem.backend.entities.users;
 
-import java.util.Date;
+import lombok.*;
 
-public abstract class User {
-	private Long id;
-	private String firstName;
-	private String lastName;
-	private String email;
-	private String password;
-	private UserStatus status;
-	private Date registerDate;
-	private UserRole role;
-	private double credit;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@MappedSuperclass
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String firstName;
+    private String lastName;
+    @Column(nullable = false, unique = true)
+    private String email;
+    private String password;
+    private UserStatus status = UserStatus.NEW;
+    private Date registerDate = new Date();
+    @ManyToMany
+    private Set<Role> roles;
+    private double credit;
 }
