@@ -13,7 +13,20 @@ public class Validator {
         }
     }
 
+    private static class PasswordValidator {
+        private static final int MIN_LENGTH = 8;
+        private static Pattern pattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{" + MIN_LENGTH + ",}$");
+
+        private static boolean validate(String password) {
+            return pattern.matcher(password).matches();
+        }
+    }
+
     public static boolean validateEmail(String email) {
-        return EmailValidator.validate(email);
+        return email != null && EmailValidator.validate(email);
+    }
+
+    public static boolean validatePassword(String password) {
+        return password != null && PasswordValidator.validate(password);
     }
 }
