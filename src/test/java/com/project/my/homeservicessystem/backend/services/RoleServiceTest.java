@@ -47,21 +47,21 @@ class RoleServiceTest {
     @Order(3)
     void getRoleByName() {
         String name = "customer";
-        Role foundByName = service.getRoleByName(name).get(0);
+        Role foundByName = service.getRoleByName(name);
         assertNotNull(foundByName);
-        List<Role> notFound = service.getRoleByName("somethingNotExist");
-        assertEquals(notFound.size(), 0);
+        Role notFound = service.getRoleByName("somethingNotExist");
+        assertNull(notFound);
     }
 
     @Test
     @Order(4)
     void updateRole() {
         String name = "customer";
-        Role foundByName = service.getRoleByName(name).get(0);
+        Role foundByName = service.getRoleByName(name);
         assertNotNull(foundByName);
         foundByName.setName("Customer");
         assertTrue(service.updateRole(foundByName));
-        Role updated = service.getRoleByName("Customer").get(0);
+        Role updated = service.getRoleByName("Customer");
         assertNotNull(updated);
         assertEquals(updated.getName(), "Customer");
 

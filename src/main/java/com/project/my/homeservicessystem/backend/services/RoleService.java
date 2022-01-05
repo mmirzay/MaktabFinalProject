@@ -29,7 +29,7 @@ public class RoleService {
         return repository.findAll();
     }
 
-    public List<Role> getRoleByName(String name) {
+    public Role getRoleByName(String name) {
         return repository.findByName(name);
     }
 
