@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -21,4 +22,19 @@ public class Provider extends User {
 	private long score;
 	@ManyToMany
 	private Set<Service> services;
+
+
+	private Provider(String email, String password, Role role, String firstName, String lastName) {
+		super(email, password, role, firstName, lastName);
+		this.profilePhotoUrl = "";
+		this.services = new HashSet<>();
+	}
+
+	public static Provider of(String email, String password, Role role) {
+		return of(email, password, role, "","");
+	}
+
+	public static Provider of(String email, String password, Role role, String firstName, String lastName) {
+		return new Provider(email, password, role, firstName, lastName);
+	}
 }
