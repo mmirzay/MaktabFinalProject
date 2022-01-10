@@ -4,4 +4,5 @@ import com.project.my.homeservicessystem.backend.entities.services.ServiceCatego
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ServiceCategoryRepository extends JpaRepository<ServiceCategory, Long> {
+    ServiceCategory findByName(String name);
 }
