@@ -2,15 +2,19 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProviderServiceTest {
 
     @Autowired
@@ -54,18 +58,44 @@ class ProviderServiceTest {
     }
 
     @Test
+    @Order(2)
     void getAllProviders() {
+        List<Provider> allProviders = service.getAllProviders();
+        assertEquals(2, allProviders.size());
     }
 
     @Test
+    @Order(3)
     void getProviderByEmail() {
+        Provider found = service.getProviderByEmail("mirzay.mohsen@gmail.com");
+        assertNotNull(found);
+
+        Provider notFound = service.getProviderByEmail("some@email.com");
+        assertNull(notFound);
     }
 
     @Test
+    @Order(4)
     void updateProvider() {
+        String email = "mirzay.mohsen@gmail.com";
+        Provider found = service.getProviderByEmail(email);
+        assertNotNull(found);
+
+        found.setFirstName("Mohsen");
+        found.setLastName("Mirzaei");
+        found.setScore(10);
+        assertTrue(service.updateProvider(found));
+        Provider updated = service.getProviderByEmail(email);
+        assertEquals(updated.getFirstName(), "Mohsen");
+        assertEquals(updated.getScore(), 10);
     }
 
     @Test
+    @Order(5)
     void deleteProviderById() {
+        Provider toRemove = service.getProviderByEmail("validEmail2@mail.com");
+        assertNotNull(toRemove);
+        assertTrue(service.deleteProviderById(toRemove.getId()));
+        assertEquals(service.getAllProviders().size(),1);
     }
 }
