@@ -1,7 +1,6 @@
 package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
-import com.project.my.homeservicessystem.backend.entities.users.Role;
 import com.project.my.homeservicessystem.backend.exceptions.CustomerException;
 import com.project.my.homeservicessystem.backend.repositories.CustomerRepository;
 import com.project.my.homeservicessystem.backend.utilities.Validator;

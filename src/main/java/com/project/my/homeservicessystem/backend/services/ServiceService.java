@@ -2,10 +2,7 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.services.Service;
 import com.project.my.homeservicessystem.backend.entities.services.ServiceCategory;
-import com.project.my.homeservicessystem.backend.entities.users.Role;
-import com.project.my.homeservicessystem.backend.exceptions.RoleException;
 import com.project.my.homeservicessystem.backend.exceptions.ServiceException;
-import com.project.my.homeservicessystem.backend.repositories.RoleRepository;
 import com.project.my.homeservicessystem.backend.repositories.ServiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,7 +16,7 @@ public class ServiceService {
     private final ServiceRepository repository;
 
     public Service addService(Service service) {
-        if(service.getBasePrice() < 0)
+        if (service.getBasePrice() < 0)
             throw new ServiceException("Invalid base price.");
         try {
             return repository.save(service);

@@ -1,7 +1,6 @@
 package com.project.my.homeservicessystem.backend.entities.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
-import com.project.my.homeservicessystem.backend.entities.users.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

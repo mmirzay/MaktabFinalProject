@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS )
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ServiceServiceTest {
     @Autowired
     ServiceService serviceManager;

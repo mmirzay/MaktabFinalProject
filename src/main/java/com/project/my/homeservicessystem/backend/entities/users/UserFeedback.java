@@ -13,13 +13,13 @@ import javax.persistence.*;
 @Setter
 @Getter
 public class UserFeedback {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String text;
-	@ManyToOne
-	private Customer customer;
-	@ManyToOne
-	private Provider provider;
-	private int rate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String text;
+    @ManyToOne
+    private Customer customer;
+    @ManyToOne
+    private Provider provider;
+    private int rate;
 }
