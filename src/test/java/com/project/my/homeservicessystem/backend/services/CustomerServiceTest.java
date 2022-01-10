@@ -2,11 +2,7 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CustomerServiceTest {
 
     @Autowired
@@ -24,18 +21,25 @@ class CustomerServiceTest {
     @Autowired
     RoleService roleService;
 
+    private Role role1;
+    private Role role2;
+
+    @BeforeAll
+    void setUp() {
+        role1 = new Role("Customer");
+        role2 = new Role("User");
+        roleService.addRole(role1);
+        roleService.addRole(role2);
+    }
+
     @Test
     @Order(1)
     void addCustomer() {
-        Role role1 = new Role("Customer");
-        Role role2 = new Role("User");
-        roleService.addRole(role1);
-        roleService.addRole(role2);
-
         String validEmail1 = "mirzay.mohsen@gmail.com";
         String validPassword1 = "Abcd1234";
 
         Customer customer1 = Customer.of(validEmail1, validPassword1, role1);
+        customer1.getRoles().add(role2);
         Customer addedCustomer1 = service.addCustomer(customer1);
         assertNotNull(addedCustomer1);
 
@@ -96,6 +100,6 @@ class CustomerServiceTest {
         Customer toRemove = service.getCustomerByEmail("validEmail2@mail.com");
         assertNotNull(toRemove);
         assertTrue(service.deleteCustomerById(toRemove.getId()));
-        assertEquals(service.getAllCustomers().size(),1);
+        assertEquals(service.getAllCustomers().size(), 1);
     }
 }

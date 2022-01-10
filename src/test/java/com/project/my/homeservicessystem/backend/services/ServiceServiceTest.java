@@ -2,10 +2,7 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.services.Service;
 import com.project.my.homeservicessystem.backend.entities.services.ServiceCategory;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS )
 class ServiceServiceTest {
     @Autowired
     ServiceService serviceManager;
@@ -25,15 +23,17 @@ class ServiceServiceTest {
     private ServiceCategory category1;
     private ServiceCategory category2;
 
-
-    @Test
-    @Order(1)
-    void addService() {
+    @BeforeAll
+    void setUp() {
         category1 = new ServiceCategory("House Cleaning");
         category2 = new ServiceCategory("House Repairs");
         categoryService.addServiceCategory(category1);
         categoryService.addServiceCategory(category2);
+    }
 
+    @Test
+    @Order(1)
+    void addService() {
         Service service1 = Service.of("Service1", category1);
         Service addedService1 = serviceManager.addService(service1);
         assertNotNull(addedService1);

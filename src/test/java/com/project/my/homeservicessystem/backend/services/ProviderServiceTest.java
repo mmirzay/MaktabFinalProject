@@ -2,10 +2,7 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProviderServiceTest {
 
     @Autowired
@@ -23,18 +21,26 @@ class ProviderServiceTest {
     @Autowired
     RoleService roleService;
 
+    private Role role1;
+    private Role role2;
+
+    @BeforeAll
+    void setUp() {
+        role1 = new Role("Provider");
+        role2 = new Role("User");
+        roleService.addRole(role1);
+        roleService.addRole(role2);
+    }
+
     @Test
     @Order(1)
     void addProvider() {
-        Role role1 = new Role("Provider");
-        Role role2 = new Role("User");
-        roleService.addRole(role1);
-        roleService.addRole(role2);
 
         String validEmail1 = "mirzay.mohsen@gmail.com";
         String validPassword1 = "Abcd1234";
 
         Provider provider = Provider.of(validEmail1, validPassword1, role1);
+        provider.getRoles().add(role2);
         Provider addedProvider1 = service.addProvider(provider);
         assertNotNull(addedProvider1);
 
@@ -96,6 +102,6 @@ class ProviderServiceTest {
         Provider toRemove = service.getProviderByEmail("validEmail2@mail.com");
         assertNotNull(toRemove);
         assertTrue(service.deleteProviderById(toRemove.getId()));
-        assertEquals(service.getAllProviders().size(),1);
+        assertEquals(service.getAllProviders().size(), 1);
     }
 }
