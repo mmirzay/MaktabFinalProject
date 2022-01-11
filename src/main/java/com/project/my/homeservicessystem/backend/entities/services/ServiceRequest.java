@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"status", "customer_id", "service_id"}))
 public class ServiceRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +24,21 @@ public class ServiceRequest {
     private Date submitDate;
     private Date startDate;
     private String address;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Customer customer;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Service service;
-    private ServiceRequestStatus status = ServiceRequestStatus.UNDER_OFFERING;
+    private ServiceRequestStatus status;
+
+    private ServiceRequest(double price, String description, Date startDate, String address, Customer customer, Service service) {
+        this(null, price, description, new Date(), startDate, address, customer, service, ServiceRequestStatus.UNDER_OFFERING);
+    }
+
+    public static ServiceRequest of(Customer customer, Service service, double price, Date startDate) {
+        return of(customer, service, price, startDate, "", "");
+    }
+
+    public static ServiceRequest of(Customer customer, Service service, double price, Date startDate, String description, String address) {
+        return new ServiceRequest(price, description, startDate, address, customer, service);
+    }
 }
