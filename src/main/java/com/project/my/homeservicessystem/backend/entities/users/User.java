@@ -25,7 +25,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
     private String password;
-    @Enumerated(EnumType.STRING)
     private UserStatus status;
     private Date registerDate;
     @ManyToMany
