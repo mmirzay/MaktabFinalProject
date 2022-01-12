@@ -1,17 +1,23 @@
 package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.services.ServiceOffer;
+import com.project.my.homeservicessystem.backend.entities.services.ServiceRequest;
+import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import com.project.my.homeservicessystem.backend.exceptions.ServiceOfferException;
 import com.project.my.homeservicessystem.backend.repositories.ServiceOfferRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 
 @org.springframework.stereotype.Service
 @RequiredArgsConstructor
 public class ServiceOfferService {
     private final ServiceOfferRepository repository;
+
+    private static final Sort BY_PRICE_ASC = Sort.by(Sort.Order.asc("price"));
 
     public ServiceOffer addServiceOffer(ServiceOffer serviceOffer) {
         if (serviceOffer.getStartHour() < 0 || serviceOffer.getStartHour() > 24)
@@ -29,38 +35,35 @@ public class ServiceOfferService {
         }
     }
 
-   /* public List<ServiceRequest> getAllServiceRequests() {
+    public List<ServiceOffer> getAllServiceOffers() {
         return repository.findAll();
     }
 
-    public List<ServiceRequest> getRequestsOfService(Service service) {
-        return repository.findAllByService(service);
+    public List<ServiceOffer> getOffersOfProvider(Provider provider) {
+        return repository.findAllByProvider(provider);
     }
 
-    public List<ServiceRequest> getRequestsOfCustomer(Customer customer) {
-        return repository.findAllByCustomer(customer);
+    public List<ServiceOffer> getOffersOfServiceRequest(ServiceRequest request) {
+        return repository.findAllByRequest(request);
     }
 
-    public boolean updateServiceRequest(ServiceRequest serviceRequest) {
-        if (serviceRequest.getId() == null || repository.findById(serviceRequest.getId()).isPresent() == false)
+    public List<ServiceOffer> getAllServiceOffersOrderByPrice() {
+        return repository.findAll(BY_PRICE_ASC);
+    }
+
+    public boolean updateServiceOffer(ServiceOffer serviceOffer) {
+        if (serviceOffer.getId() == null || repository.findById(serviceOffer.getId()).isPresent() == false)
             return false;
-        repository.save(serviceRequest);
+        repository.save(serviceOffer);
         return true;
     }
 
-    public List<ServiceRequest> getRequestsByStatus(ServiceRequestStatus status) {
-        return repository.findByStatus(status);
-    }
-
-    public List<ServiceRequest> getRequestsWithStartDateAfter(Date date) {
-        return repository.findByStartDateGreaterThanEqual(date);
-    }
-
-    public boolean deleteServiceRequestById(Long id) {
+    public boolean deleteServiceOfferById(Long id) {
         if (id == null || repository.findById(id).isPresent() == false)
             return false;
         repository.deleteById(id);
         return true;
-    }*/
     }
+
+}
 

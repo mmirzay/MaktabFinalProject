@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -119,4 +120,88 @@ class ServiceOfferServiceTest {
         assertNotNull(offerService.addServiceOffer(offer4));
 
     }
+
+    @Test
+    @Order(2)
+    void getAllServiceOffers() {
+        List<ServiceOffer> allServiceOffers = offerService.getAllServiceOffers();
+        assertEquals(4, allServiceOffers.size());
+    }
+
+    @Test
+    @Order(3)
+    void getOffersOfProvider() {
+        List<ServiceOffer> offersOfProvider1 = offerService.getOffersOfProvider(provider1);
+        assertEquals(3, offersOfProvider1.size());
+
+        List<ServiceOffer> offersOfProvider2 = offerService.getOffersOfProvider(provider2);
+        assertEquals(1, offersOfProvider2.size());
+
+        Provider notExist = new Provider();
+        notExist.setId(1234L);
+        List<ServiceOffer> offersOfNotExist = offerService.getOffersOfProvider(notExist);
+        assertEquals(0, offersOfNotExist.size());
+    }
+
+    @Test
+    @Order(4)
+    void getOffersOfServiceRequest() {
+        List<ServiceOffer> offersOfServiceRequest1 = offerService.getOffersOfServiceRequest(request1);
+        assertEquals(1, offersOfServiceRequest1.size());
+
+        List<ServiceOffer> offersOfServiceRequest2 = offerService.getOffersOfServiceRequest(request2);
+        assertEquals(2, offersOfServiceRequest2.size());
+
+        List<ServiceOffer> offersOfServiceRequest3 = offerService.getOffersOfServiceRequest(request3);
+        assertEquals(1, offersOfServiceRequest3.size());
+
+        ServiceRequest notExist = new ServiceRequest();
+        notExist.setId(1234L);
+        List<ServiceOffer> offersOfNotExist = offerService.getOffersOfServiceRequest(notExist);
+        assertEquals(0, offersOfNotExist.size());
+
+    }
+
+    @Test
+    @Order(5)
+    void getAllServiceOffersOrderByPrice() {
+        List<ServiceOffer> orderedOffers = offerService.getAllServiceOffersOrderByPrice();
+        System.out.println("Mohsen: " + orderedOffers);
+        assertEquals(1000, orderedOffers.get(0).getPrice());
+    }
+
+    @Test
+    @Order(6)
+    void updateServiceOffer() {
+        ServiceOffer newOffer = ServiceOffer.of(provider2, request1, 4000);
+        assertNotNull(offerService.addServiceOffer(newOffer));
+
+        newOffer.setDurationInHours(10);
+        newOffer.setStartHour(14);
+        assertTrue(offerService.updateServiceOffer(newOffer));
+
+        ServiceOffer updated = offerService.getAllServiceOffers().get(4);
+        assertEquals(10, updated.getDurationInHours());
+        assertEquals(14, updated.getStartHour());
+
+        ServiceOffer invalidId = new ServiceOffer();
+        assertFalse(offerService.updateServiceOffer(invalidId));
+
+        invalidId.setId(1234L);
+        assertFalse(offerService.updateServiceOffer(invalidId));
+    }
+
+    @Test
+    @Order(7)
+    void deleteServiceOfferById() {
+        List<ServiceOffer> allServiceOffers = offerService.getAllServiceOffers();
+        assertEquals(5, allServiceOffers.size());
+
+        ServiceOffer toRemove = allServiceOffers.get(4);
+        assertTrue(offerService.deleteServiceOfferById(toRemove.getId()));
+        assertEquals(4, offerService.getAllServiceOffers().size());
+
+        assertFalse(offerService.deleteServiceOfferById(toRemove.getId()));
+    }
+
 }
