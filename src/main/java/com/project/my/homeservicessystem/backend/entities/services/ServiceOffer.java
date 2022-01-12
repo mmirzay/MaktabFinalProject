@@ -14,16 +14,33 @@ import java.util.Date;
 @AllArgsConstructor
 @Setter
 @Getter
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"provider_id", "request_id"}))
 public class ServiceOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date submitDate = new Date();
-    private Integer startHour;
+    private Date submitDate;
+    private int startHour;
     private double price;
     private int durationInHours;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Provider provider;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private ServiceRequest request;
+
+    private ServiceOffer(Date submitDate, int startHour, double price, int durationInHours, Provider provider, ServiceRequest request) {
+        this(null, submitDate, startHour, price, durationInHours, provider, request);
+    }
+
+    public static ServiceOffer of(Provider provider, ServiceRequest request, double price) {
+        return of(provider, request, price, 0, 0);
+    }
+
+    public static ServiceOffer of(Provider provider, ServiceRequest request, double price, int startHour) {
+        return of(provider, request, price, startHour, 0);
+    }
+
+    public static ServiceOffer of(Provider provider, ServiceRequest request, double price, int startHour, int durationInHours) {
+        return new ServiceOffer(new Date(), startHour, price, durationInHours, provider, request);
+    }
 }
