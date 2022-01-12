@@ -7,7 +7,9 @@ import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.exceptions.ServiceRequestException;
 import com.project.my.homeservicessystem.backend.repositories.ServiceRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.List;
 
@@ -17,11 +19,18 @@ public class ServiceRequestService {
     private final ServiceRequestRepository repository;
 
     public ServiceRequest addServiceRequest(ServiceRequest request) {
+        //FIXME is it true to check current date?
         if (request.getStartDate().before(new Date()))
             throw new ServiceRequestException("Start date is NOT valid.");
         if (request.getPrice() < request.getService().getBasePrice())
             throw new ServiceRequestException("Price is NOT valid.");
-        return repository.save(request);
+        try {
+            return repository.save(request);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getRootCause() instanceof SQLIntegrityConstraintViolationException)
+                throw new ServiceRequestException("Request is duplicate");
+            throw new ServiceRequestException("Something wrong while adding new request", e);
+        }
     }
 
     public List<ServiceRequest> getAllServiceRequests() {
