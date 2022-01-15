@@ -166,7 +166,6 @@ class ServiceOfferServiceTest {
     @Order(5)
     void getAllServiceOffersOrderByPrice() {
         List<ServiceOffer> orderedOffers = offerService.getAllServiceOffersOrderByPrice();
-        System.out.println("Mohsen: " + orderedOffers);
         assertEquals(1000, orderedOffers.get(0).getPrice());
     }
 
