@@ -20,7 +20,7 @@ class RoleServiceTest {
 
     @Test
     @Order(1)
-    void addRole() {
+    void addRole() throws Exception {
         Role customer = new Role("customer");
 
         assertNull(customer.getId());
@@ -77,7 +77,7 @@ class RoleServiceTest {
 
     @Test
     @Order(5)
-    void deleteRoleById() {
+    void deleteRoleById() throws Exception {
         Role toRemove = new Role("ToRemove");
         service.addRole(toRemove);
         List<Role> allRoles = service.getAllRoles();

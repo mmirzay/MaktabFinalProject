@@ -15,7 +15,7 @@ import java.util.List;
 public class RoleService {
     private final RoleRepository repository;
 
-    public Role addRole(Role role) {
+    public Role addRole(Role role) throws RoleException {
         try {
             return repository.save(role);
         } catch (DataIntegrityViolationException e) {
