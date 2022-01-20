@@ -16,7 +16,7 @@ import java.util.List;
 public class CustomerService {
     private final CustomerRepository repository;
 
-    public Customer addCustomer(Customer customer) {
+    public Customer addCustomer(Customer customer) throws CustomerException {
         if (Validator.validateEmail(customer.getEmail()) == false)
             throw new CustomerException("Email is NOT valid");
 

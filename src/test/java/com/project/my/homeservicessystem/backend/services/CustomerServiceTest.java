@@ -2,6 +2,8 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
+import com.project.my.homeservicessystem.backend.exceptions.CustomerException;
+import com.project.my.homeservicessystem.backend.exceptions.RoleException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +27,7 @@ class CustomerServiceTest {
     private Role role2;
 
     @BeforeAll
-    void setUp() {
+    void setUp() throws Exception {
         role1 = new Role("Customer");
         role2 = new Role("User");
         roleService.addRole(role1);
@@ -34,7 +36,7 @@ class CustomerServiceTest {
 
     @Test
     @Order(1)
-    void addCustomer() {
+    void addCustomer() throws Exception {
         String validEmail1 = "mirzay.mohsen@gmail.com";
         String validPassword1 = "Abcd1234";
 
