@@ -1,6 +1,6 @@
 package com.project.my.homeservicessystem.backend.exceptions;
 
-public class ServiceOfferException extends RuntimeException {
+public class ServiceOfferException extends Exception {
 
     public ServiceOfferException(String msg) {
         super(msg);

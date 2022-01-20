@@ -18,7 +18,7 @@ import java.util.List;
 public class ServiceRequestService {
     private final ServiceRequestRepository repository;
 
-    public ServiceRequest addServiceRequest(ServiceRequest request) {
+    public ServiceRequest addServiceRequest(ServiceRequest request) throws ServiceRequestException {
         //FIXME is it true to check current date?
         if (request.getStartDate().before(new Date()))
             throw new ServiceRequestException("Start date is NOT valid.");

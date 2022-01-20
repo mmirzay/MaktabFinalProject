@@ -19,7 +19,7 @@ public class ServiceOfferService {
 
     private static final Sort BY_PRICE_ASC = Sort.by(Sort.Order.asc("price"));
 
-    public ServiceOffer addServiceOffer(ServiceOffer serviceOffer) {
+    public ServiceOffer addServiceOffer(ServiceOffer serviceOffer) throws ServiceOfferException {
         if (serviceOffer.getStartHour() < 0 || serviceOffer.getStartHour() > 24)
             throw new ServiceOfferException("Start hour is NOT valid.");
         if (serviceOffer.getDurationInHours() < 0)

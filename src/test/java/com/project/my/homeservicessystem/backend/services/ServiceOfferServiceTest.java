@@ -52,7 +52,7 @@ class ServiceOfferServiceTest {
     private ServiceRequest request3;
 
     @BeforeAll
-    void setUp() {
+    void setUp() throws Exception {
         Role role1 = new Role("Provider");
         Role role2 = new Role("Customer");
         roleService.addRole(role1);
@@ -97,7 +97,7 @@ class ServiceOfferServiceTest {
 
     @Test
     @Order(1)
-    void addServiceOffer() {
+    void addServiceOffer() throws Exception {
         ServiceOffer offer1 = ServiceOffer.of(provider1, request1, 1000);
         ServiceOffer offer2 = ServiceOffer.of(provider2, request2, 2000);
 
@@ -171,7 +171,7 @@ class ServiceOfferServiceTest {
 
     @Test
     @Order(6)
-    void updateServiceOffer() {
+    void updateServiceOffer() throws Exception {
         ServiceOffer newOffer = ServiceOffer.of(provider2, request1, 4000);
         assertNotNull(offerService.addServiceOffer(newOffer));
 

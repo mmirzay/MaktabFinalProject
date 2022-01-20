@@ -2,8 +2,6 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
-import com.project.my.homeservicessystem.backend.exceptions.CustomerException;
-import com.project.my.homeservicessystem.backend.exceptions.RoleException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

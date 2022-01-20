@@ -24,7 +24,7 @@ class ServiceServiceTest {
     private ServiceCategory category2;
 
     @BeforeAll
-    void setUp() {
+    void setUp() throws Exception {
         category1 = new ServiceCategory("House Cleaning");
         category2 = new ServiceCategory("House Repairs");
         categoryService.addServiceCategory(category1);
@@ -33,7 +33,7 @@ class ServiceServiceTest {
 
     @Test
     @Order(1)
-    void addService() {
+    void addService() throws Exception {
         Service service1 = Service.of("Service1", category1);
         Service addedService1 = serviceManager.addService(service1);
         assertNotNull(addedService1);

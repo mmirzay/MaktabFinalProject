@@ -44,7 +44,7 @@ class ServiceRequestServiceTest {
     private Service service2;
 
     @BeforeAll
-    void setUp() {
+    void setUp() throws Exception {
         Role role = new Role("Customer");
         roleService.addRole(role);
 
@@ -66,7 +66,7 @@ class ServiceRequestServiceTest {
 
     @Test
     @Order(1)
-    void addServiceRequest() {
+    void addServiceRequest() throws Exception {
         LocalDateTime localDateTime1 = LocalDateTime.of(2023, 1, 11, 19, 30);
         Date startDate1 = Timestamp.valueOf(localDateTime1);
         ServiceRequest request1 = ServiceRequest.of(customer1, service1, 1000, startDate1);
@@ -136,7 +136,7 @@ class ServiceRequestServiceTest {
 
     @Test
     @Order(5)
-    void updateServiceRequest() {
+    void updateServiceRequest() throws Exception {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 1, 11, 19, 30);
         Date startDate = Timestamp.valueOf(localDateTime);
         ServiceRequest newRequest = ServiceRequest.of(customer2, service1, 2000, startDate);

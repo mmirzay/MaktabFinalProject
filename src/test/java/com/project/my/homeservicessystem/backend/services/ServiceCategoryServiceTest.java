@@ -21,7 +21,7 @@ class ServiceCategoryServiceTest {
 
     @Test
     @Order(1)
-    void addServiceCategory() {
+    void addServiceCategory() throws Exception {
         ServiceCategory category1 = new ServiceCategory("Home Cleaning");
         assertNull(category1.getId());
         ServiceCategory addedCategory = service.addServiceCategory(category1);
@@ -73,7 +73,7 @@ class ServiceCategoryServiceTest {
 
     @Test
     @Order(5)
-    void deleteServiceCategoryById() {
+    void deleteServiceCategoryById() throws Exception {
         ServiceCategory toRemove = new ServiceCategory("ToRemove");
         service.addServiceCategory(toRemove);
         List<ServiceCategory> allServiceCategories = service.getAllServiceCategories();

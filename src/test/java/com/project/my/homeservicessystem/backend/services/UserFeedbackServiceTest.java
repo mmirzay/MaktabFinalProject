@@ -47,7 +47,7 @@ class UserFeedbackServiceTest {
     private Service service2;
 
     @BeforeAll
-    void setUp() {
+    void setUp() throws Exception {
         ServiceCategory category1 = new ServiceCategory("House Repairs");
         ServiceCategory category2 = new ServiceCategory("House Cleaning");
         categoryService.addServiceCategory(category1);
@@ -81,7 +81,7 @@ class UserFeedbackServiceTest {
 
     @Test
     @Order(1)
-    void addUserFeedback() {
+    void addUserFeedback() throws Exception {
         UserFeedback feedback1 = UserFeedback.of(customer1, provider1, service1, 5);
         UserFeedback addedFeedback1 = feedbackService.addUserFeedback(feedback1);
         assertNotNull(addedFeedback1);

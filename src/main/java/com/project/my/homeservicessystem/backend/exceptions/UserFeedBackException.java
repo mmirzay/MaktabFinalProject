@@ -1,6 +1,6 @@
 package com.project.my.homeservicessystem.backend.exceptions;
 
-public class UserFeedBackException extends RuntimeException {
+public class UserFeedBackException extends Exception {
 
     public UserFeedBackException(String msg) {
         super(msg);

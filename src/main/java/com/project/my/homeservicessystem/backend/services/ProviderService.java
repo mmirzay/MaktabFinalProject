@@ -16,7 +16,7 @@ import java.util.List;
 public class ProviderService {
     private final ProviderRepository repository;
 
-    public Provider addProvider(Provider provider) {
+    public Provider addProvider(Provider provider) throws ProviderException {
         if (Validator.validateEmail(provider.getEmail()) == false)
             throw new ProviderException("Email is NOT valid");
 

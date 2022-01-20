@@ -17,7 +17,7 @@ import java.util.List;
 public class UserFeedbackService {
     private final UserFeedbackRepository repository;
 
-    public UserFeedback addUserFeedback(UserFeedback userFeedback) {
+    public UserFeedback addUserFeedback(UserFeedback userFeedback) throws UserFeedBackException {
         if (userFeedback.getRate() < 0)
             throw new UserFeedBackException("Rate is NOT valid");
         if (userFeedback.getProvider().getServices().contains(userFeedback.getService()) == false)

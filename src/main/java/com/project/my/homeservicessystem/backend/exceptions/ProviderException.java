@@ -1,6 +1,6 @@
 package com.project.my.homeservicessystem.backend.exceptions;
 
-public class ProviderException extends RuntimeException {
+public class ProviderException extends Exception {
 
     public ProviderException(String msg) {
         super(msg);

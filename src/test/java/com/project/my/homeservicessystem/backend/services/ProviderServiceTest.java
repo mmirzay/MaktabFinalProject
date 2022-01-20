@@ -25,7 +25,7 @@ class ProviderServiceTest {
     private Role role2;
 
     @BeforeAll
-    void setUp() {
+    void setUp() throws Exception {
         role1 = new Role("Provider");
         role2 = new Role("User");
         roleService.addRole(role1);
@@ -34,7 +34,7 @@ class ProviderServiceTest {
 
     @Test
     @Order(1)
-    void addProvider() {
+    void addProvider() throws Exception {
 
         String validEmail1 = "mirzay.mohsen@gmail.com";
         String validPassword1 = "Abcd1234";

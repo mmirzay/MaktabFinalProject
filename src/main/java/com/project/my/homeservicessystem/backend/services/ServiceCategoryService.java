@@ -15,7 +15,7 @@ import java.util.List;
 public class ServiceCategoryService {
     private final ServiceCategoryRepository repository;
 
-    public ServiceCategory addServiceCategory(ServiceCategory serviceCategory) {
+    public ServiceCategory addServiceCategory(ServiceCategory serviceCategory) throws ServiceCategoryException {
         try {
             return repository.save(serviceCategory);
         } catch (DataIntegrityViolationException e) {

@@ -15,7 +15,7 @@ import java.util.List;
 public class ServiceService {
     private final ServiceRepository repository;
 
-    public Service addService(Service service) {
+    public Service addService(Service service) throws ServiceException {
         if (service.getBasePrice() < 0)
             throw new ServiceException("Invalid base price.");
         try {
