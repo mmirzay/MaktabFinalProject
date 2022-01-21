@@ -33,7 +33,7 @@ public class RoleController {
     public ResponseEntity<RolesList> rolesList() {
         try {
             RolesList result = manager.getRolesList();
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+            return ResponseEntity.ok().body(result);
         } catch (ManagerException e) {
             throw new ResponseStatusException(
                     HttpStatus.NO_CONTENT, e.getLocalizedMessage());
