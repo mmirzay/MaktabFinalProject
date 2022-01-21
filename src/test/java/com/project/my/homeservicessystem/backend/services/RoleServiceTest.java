@@ -82,9 +82,9 @@ class RoleServiceTest {
         service.addRole(toRemove);
         List<Role> allRoles = service.getAllRoles();
         assertEquals(allRoles.size(), 4);
-        assertTrue(service.deleteRoleById(toRemove.getId()));
+        assertDoesNotThrow(() -> service.deleteRoleById(toRemove.getId()));
         allRoles = service.getAllRoles();
         assertEquals(allRoles.size(), 3);
-        assertFalse(service.deleteRoleById(1234L));
+        assertThrows(Exception.class, () -> service.deleteRoleById(1234L));
     }
 }
