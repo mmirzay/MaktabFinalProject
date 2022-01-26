@@ -1,11 +1,9 @@
 package com.project.my.homeservicessystem.backend.api;
 
 import com.project.my.homeservicessystem.backend.api.dto.in.CustomerRegisterParam;
+import com.project.my.homeservicessystem.backend.api.dto.in.CustomerUpdateProfileParam;
 import com.project.my.homeservicessystem.backend.api.dto.in.RoleCreateParam;
-import com.project.my.homeservicessystem.backend.api.dto.out.CustomerRegisterResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.RoleCreateResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.RoleDeleteResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.RolesList;
+import com.project.my.homeservicessystem.backend.api.dto.out.*;
 
 public interface HomeServiceInterface {
 
@@ -17,4 +15,7 @@ public interface HomeServiceInterface {
 
     CustomerRegisterResult registerCustomer(CustomerRegisterParam registerParam);
 
+    CustomerProfileResult getCustomerProfile(Long id);
+
+    String updateCustomerProfile(Long id, CustomerUpdateProfileParam param);
 }

@@ -2,11 +2,9 @@ package com.project.my.homeservicessystem.backend.manager;
 
 import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
 import com.project.my.homeservicessystem.backend.api.dto.in.CustomerRegisterParam;
+import com.project.my.homeservicessystem.backend.api.dto.in.CustomerUpdateProfileParam;
 import com.project.my.homeservicessystem.backend.api.dto.in.RoleCreateParam;
-import com.project.my.homeservicessystem.backend.api.dto.out.CustomerRegisterResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.RoleCreateResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.RoleDeleteResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.RolesList;
+import com.project.my.homeservicessystem.backend.api.dto.out.*;
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
 import com.project.my.homeservicessystem.backend.exceptions.CustomerException;
@@ -66,6 +64,36 @@ public class HomeServiceManager implements HomeServiceInterface {
             Customer registered = customerService.addCustomer(toRegister);
             return new CustomerRegisterResult(registered.getId());
         } catch (CustomerException | RoleException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public CustomerProfileResult getCustomerProfile(Long id) {
+        try {
+            Customer customer = customerService.getCustomerById(id);
+            return CustomerProfileResult.builder()
+                    .firstName(customer.getFirstName())
+                    .lastName(customer.getLastName())
+                    .email(customer.getEmail())
+                    .registeredDate(customer.getRegisterDate())
+                    .credit(customer.getCredit())
+                    .status(customer.getStatus())
+                    .build();
+        } catch (CustomerException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public String updateCustomerProfile(Long id, CustomerUpdateProfileParam param) {
+        try {
+            Customer customer = customerService.getCustomerById(id);
+            customer.setFirstName(param.getFirstName());
+            customer.setLastName(param.getLastName());
+            boolean updated = customerService.updateCustomer(customer);
+            return updated ? "updated successfully." : "updating failed!";
+        } catch (CustomerException e) {
             throw new ManagerException(e);
         }
     }

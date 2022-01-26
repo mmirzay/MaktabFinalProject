@@ -36,6 +36,10 @@ public class CustomerService {
         return repository.findAll();
     }
 
+    public Customer getCustomerById(Long id) throws CustomerException {
+        return repository.findById(id).orElseThrow(() -> new CustomerException("Customer ID is not exists."));
+    }
+
     public Customer getCustomerByEmail(String email) {
         return repository.findByEmail(email);
     }
@@ -53,4 +57,6 @@ public class CustomerService {
         repository.deleteById(id);
         return true;
     }
+
+
 }
