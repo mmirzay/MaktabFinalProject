@@ -2,6 +2,7 @@ package com.project.my.homeservicessystem.backend.manager;
 
 import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
 import com.project.my.homeservicessystem.backend.api.dto.in.CustomerRegisterParam;
+import com.project.my.homeservicessystem.backend.api.dto.in.CustomerUpdatePasswordParam;
 import com.project.my.homeservicessystem.backend.api.dto.in.CustomerUpdateProfileParam;
 import com.project.my.homeservicessystem.backend.api.dto.in.RoleCreateParam;
 import com.project.my.homeservicessystem.backend.api.dto.out.*;
@@ -12,6 +13,7 @@ import com.project.my.homeservicessystem.backend.exceptions.ManagerException;
 import com.project.my.homeservicessystem.backend.exceptions.RoleException;
 import com.project.my.homeservicessystem.backend.services.CustomerService;
 import com.project.my.homeservicessystem.backend.services.RoleService;
+import com.project.my.homeservicessystem.backend.utilities.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -86,13 +88,29 @@ public class HomeServiceManager implements HomeServiceInterface {
     }
 
     @Override
-    public String updateCustomerProfile(Long id, CustomerUpdateProfileParam param) {
+    public CustomerUpdateResult updateCustomerProfile(Long id, CustomerUpdateProfileParam param) {
         try {
             Customer customer = customerService.getCustomerById(id);
             customer.setFirstName(param.getFirstName());
             customer.setLastName(param.getLastName());
-            boolean updated = customerService.updateCustomer(customer);
-            return updated ? "updated successfully." : "updating failed!";
+            String message = customerService.updateCustomer(customer) ? "updated successfully." : "updating failed!";
+            return new CustomerUpdateResult(id, message);
+        } catch (CustomerException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public CustomerUpdateResult updateCustomerPassword(Long id, CustomerUpdatePasswordParam param) {
+        try {
+            Customer customer = customerService.getCustomerById(id);
+            if (customer.getPassword().equals(param.getOldPassword()) == false)
+                throw new CustomerException("Current password is not correct.");
+            if (Validator.validatePassword(param.getNewPassword()) == false)
+                throw new CustomerException("New password is not valid.");
+            customer.setPassword(param.getNewPassword());
+            String message = customerService.updateCustomer(customer) ? "updated successfully." : "updating failed!";
+            return new CustomerUpdateResult(id, message);
         } catch (CustomerException e) {
             throw new ManagerException(e);
         }
