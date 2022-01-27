@@ -31,4 +31,14 @@ public interface HomeServiceInterface {
     ServiceCategoryUpdateResult updateServiceCategory(Long id, ServiceCategoryUpdateParam param);
 
     ServiceCategoryDeleteResult deleteServiceCategoryById(Long id);
+
+
+    //Services
+    ServiceCreateResult addService(ServiceCreateParam createParam);
+
+    ServicesList getServicesList();
+
+    ServiceUpdateResult updateService(Long id, ServiceUpdateParam param);
+
+    ServiceDeleteResult deleteServiceById(Long id);
 }

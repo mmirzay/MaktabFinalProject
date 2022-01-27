@@ -39,6 +39,10 @@ public class ServiceService {
         return repository.findByTitle(title);
     }
 
+    public Service getServiceById(Long id) throws ServiceException {
+        return repository.findById(id).orElseThrow(() -> new ServiceException("Service Id is not exists."));
+    }
+
     public boolean updateService(Service service) {
         if (service.getId() == null || repository.findById(service.getId()).isPresent() == false)
             return false;
