@@ -33,6 +33,10 @@ public class ServiceCategoryService {
         return repository.findByName(name);
     }
 
+    public ServiceCategory getServiceCategoryById(Long id) throws ServiceCategoryException {
+        return repository.findById(id).orElseThrow(() -> new ServiceCategoryException("Category ID is not exists"));
+    }
+
     public boolean updateServiceCategory(ServiceCategory serviceCategory) {
         if (serviceCategory.getId() == null || repository.findById(serviceCategory.getId()).isPresent() == false)
             return false;
