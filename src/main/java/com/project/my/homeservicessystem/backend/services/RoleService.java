@@ -37,20 +37,13 @@ public class RoleService {
         return repository.findById(id).orElseThrow(() -> new RoleException("Role ID is not exist."));
     }
 
-    public boolean updateRole(Role role) {
-        if (role.getId() == null || repository.findById(role.getId()).isPresent() == false)
-            return false;
-        repository.save(role);
-        return true;
-    }
-
     public void deleteRoleById(Long id) throws RoleException {
         try {
             repository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
             if (e.getRootCause() instanceof SQLIntegrityConstraintViolationException)
-                throw new RoleException("Role is set for a user");
-            throw new RoleException("Some thing wrong while deleting role", e);
+                throw new RoleException("Role is set for at least one user.");
+            throw new RoleException("Some thing wrong while deleting role.", e);
         }
     }
 

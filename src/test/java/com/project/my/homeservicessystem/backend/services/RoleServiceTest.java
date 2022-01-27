@@ -58,25 +58,6 @@ class RoleServiceTest {
 
     @Test
     @Order(4)
-    void updateRole() {
-        String name = "customer";
-        Role foundByName = service.getRoleByName(name);
-        assertNotNull(foundByName);
-        foundByName.setName("Customer");
-        assertTrue(service.updateRole(foundByName));
-        Role updated = service.getRoleByName("Customer");
-        assertNotNull(updated);
-        assertEquals(updated.getName(), "Customer");
-
-        Role invalidId = new Role("Not Exist");
-        assertFalse(service.updateRole(invalidId));
-
-        invalidId.setId(1234L);
-        assertFalse(service.updateRole(invalidId));
-    }
-
-    @Test
-    @Order(5)
     void deleteRoleById() throws Exception {
         Role toRemove = new Role("ToRemove");
         service.addRole(toRemove);
