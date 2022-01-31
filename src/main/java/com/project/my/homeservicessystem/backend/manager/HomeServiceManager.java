@@ -5,13 +5,11 @@ import com.project.my.homeservicessystem.backend.api.dto.in.*;
 import com.project.my.homeservicessystem.backend.api.dto.out.*;
 import com.project.my.homeservicessystem.backend.entities.services.Service;
 import com.project.my.homeservicessystem.backend.entities.services.ServiceCategory;
+import com.project.my.homeservicessystem.backend.entities.services.ServiceRequest;
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
 import com.project.my.homeservicessystem.backend.exceptions.*;
-import com.project.my.homeservicessystem.backend.services.CustomerService;
-import com.project.my.homeservicessystem.backend.services.RoleService;
-import com.project.my.homeservicessystem.backend.services.ServiceCategoryService;
-import com.project.my.homeservicessystem.backend.services.ServiceService;
+import com.project.my.homeservicessystem.backend.services.*;
 import com.project.my.homeservicessystem.backend.utilities.Validator;
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +22,7 @@ public class HomeServiceManager implements HomeServiceInterface {
     private final CustomerService customerService;
     private final ServiceCategoryService categoryService;
     private final ServiceService serviceService;
+    private final ServiceRequestService requestService;
 
     @Override
     public RoleCreateResult addRole(RoleCreateParam createParam) {
@@ -212,6 +211,32 @@ public class HomeServiceManager implements HomeServiceInterface {
         }
     }
 
+    @Override
+    public CustomerServiceRequestResult requestServiceByCustomer(Long id, CustomerServiceRequestParam param) {
+        try {
+            Customer customer = customerService.getCustomerById(id);
+            Service service = serviceService.getServiceById(param.getServiceId());
+            ServiceRequest newRequest = createServiceRequest(param, customer, service);
+            ServiceRequest added = requestService.addServiceRequest(newRequest);
+            return new CustomerServiceRequestResult(added.getId());
+        } catch (CustomerException | ServiceException | ServiceRequestException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServiceRequestsList getCustomerRequests(Long id) {
+        try {
+            Customer customer = customerService.getCustomerById(id);
+            List<ServiceRequest> requests = requestService.getRequestsOfCustomer(customer);
+            if (requests.isEmpty())
+                throw new CustomerException("Requests list is empty.");
+            return new ServiceRequestsList(requests);
+        } catch (CustomerException e) {
+            throw new ManagerException(e);
+        }
+    }
+
     private Role createRole(RoleCreateParam createParam) {
         return new Role(createParam.getName());
     }
@@ -230,5 +255,9 @@ public class HomeServiceManager implements HomeServiceInterface {
 
     private Service createService(ServiceCreateParam createParam, ServiceCategory category) {
         return Service.of(createParam.getTitle(), createParam.getBasePrice(), createParam.getDescription(), category);
+    }
+
+    private ServiceRequest createServiceRequest(CustomerServiceRequestParam param, Customer customer, Service service) {
+        return ServiceRequest.of(customer, service, param.getPrice(), param.getStartDate(), param.getDescription(), param.getAddress());
     }
 }

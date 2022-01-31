@@ -41,4 +41,8 @@ public interface HomeServiceInterface {
     ServiceUpdateResult updateService(Long id, ServiceUpdateParam param);
 
     ServiceDeleteResult deleteServiceById(Long id);
+
+    CustomerServiceRequestResult requestServiceByCustomer(Long id, CustomerServiceRequestParam param);
+
+    ServiceRequestsList getCustomerRequests(Long id);
 }

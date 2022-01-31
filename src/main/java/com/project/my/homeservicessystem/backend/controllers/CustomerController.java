@@ -2,11 +2,10 @@ package com.project.my.homeservicessystem.backend.controllers;
 
 import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
 import com.project.my.homeservicessystem.backend.api.dto.in.CustomerRegisterParam;
+import com.project.my.homeservicessystem.backend.api.dto.in.CustomerServiceRequestParam;
 import com.project.my.homeservicessystem.backend.api.dto.in.CustomerUpdatePasswordParam;
 import com.project.my.homeservicessystem.backend.api.dto.in.CustomerUpdateProfileParam;
-import com.project.my.homeservicessystem.backend.api.dto.out.CustomerProfileResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.CustomerRegisterResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.CustomerUpdateResult;
+import com.project.my.homeservicessystem.backend.api.dto.out.*;
 import com.project.my.homeservicessystem.backend.exceptions.ManagerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,6 +60,28 @@ public class CustomerController {
         } catch (ManagerException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/{customerId}/request")
+    public ResponseEntity<CustomerServiceRequestResult> requestService(@PathVariable Long customerId, @RequestBody CustomerServiceRequestParam param) {
+        try {
+            CustomerServiceRequestResult result = manager.requestServiceByCustomer(customerId, param);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @GetMapping("/{customerId}/request")
+    public ResponseEntity<ServiceRequestsList> requestsList(@PathVariable Long customerId) {
+        try {
+            ServiceRequestsList result = manager.getCustomerRequests(customerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, e.getLocalizedMessage());
         }
     }
 }
