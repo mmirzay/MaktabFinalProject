@@ -28,10 +28,14 @@ public class ServiceRequest {
     private Customer customer;
     @ManyToOne(optional = false)
     private Service service;
+
+
     private ServiceRequestStatus status;
+    private Date statusDate;
 
     private ServiceRequest(double price, String description, Date startDate, String address, Customer customer, Service service) {
-        this(null, price, description, new Date(), startDate, address, customer, service, ServiceRequestStatus.UNDER_OFFERING);
+        this(null, price, description, new Date(), startDate, address, customer, service, null, null);
+        setStatus(ServiceRequestStatus.UNDER_OFFERING);
     }
 
     public static ServiceRequest of(Customer customer, Service service, double price, Date startDate) {
@@ -40,5 +44,10 @@ public class ServiceRequest {
 
     public static ServiceRequest of(Customer customer, Service service, double price, Date startDate, String description, String address) {
         return new ServiceRequest(price, description, startDate, address, customer, service);
+    }
+
+    public void setStatus(ServiceRequestStatus status) {
+        this.status = status;
+        this.statusDate = new Date();
     }
 }
