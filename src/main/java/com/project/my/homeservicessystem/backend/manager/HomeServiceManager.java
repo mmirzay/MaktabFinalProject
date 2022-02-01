@@ -3,11 +3,9 @@ package com.project.my.homeservicessystem.backend.manager;
 import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
 import com.project.my.homeservicessystem.backend.api.dto.in.*;
 import com.project.my.homeservicessystem.backend.api.dto.out.*;
-import com.project.my.homeservicessystem.backend.entities.services.Service;
-import com.project.my.homeservicessystem.backend.entities.services.ServiceCategory;
-import com.project.my.homeservicessystem.backend.entities.services.ServiceRequest;
-import com.project.my.homeservicessystem.backend.entities.services.ServiceRequestStatus;
+import com.project.my.homeservicessystem.backend.entities.services.*;
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
+import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
 import com.project.my.homeservicessystem.backend.exceptions.*;
 import com.project.my.homeservicessystem.backend.services.*;
@@ -21,9 +19,11 @@ import java.util.List;
 public class HomeServiceManager implements HomeServiceInterface {
     private final RoleService roleService;
     private final CustomerService customerService;
+    private final ProviderService providerService;
     private final ServiceCategoryService categoryService;
     private final ServiceService serviceService;
     private final ServiceRequestService requestService;
+    private final ServiceOfferService offerService;
 
     @Override
     public RoleCreateResult addRole(RoleCreateParam createParam) {
@@ -239,7 +239,7 @@ public class HomeServiceManager implements HomeServiceInterface {
     public ServiceRequestCancelResult cancelServiceRequestByCustomer(Long customerId, Long reqId) {
         try {
             Customer customer = customerService.getCustomerById(customerId);
-            ServiceRequest request = requestService.getRequestsById(reqId);
+            ServiceRequest request = requestService.getRequestById(reqId);
             if (request.getCustomer().getId().equals(customer.getId()) == false)
                 throw new ServiceRequestException("Request is not belong to customer");
             if (request.getStatus() == ServiceRequestStatus.DONE ||
@@ -250,6 +250,74 @@ public class HomeServiceManager implements HomeServiceInterface {
             String message = requestService.updateServiceRequest(request) ? "Canceled successfully" : "Canceling failed.";
             return new ServiceRequestCancelResult(reqId, message);
         } catch (CustomerException | ServiceRequestException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServiceOffersList getOffersOfCustomerRequest(Long customerId, Long reqId) {
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+            ServiceRequest request = requestService.getRequestById(reqId);
+            if (request.getCustomer().getId().equals(customer.getId()) == false)
+                throw new ServiceRequestException("Request is not belong to customer");
+            List<ServiceOffer> offers = offerService.getOffersOfServiceRequest(request);
+            if (offers.isEmpty())
+                throw new CustomerException("Offers list is empty.");
+            return new ServiceOffersList(offers);
+        } catch (CustomerException | ServiceRequestException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServiceOfferAcceptResult acceptServiceOfferByCustomer(Long customerId, Long reqId, Long offerId) {
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+
+            ServiceRequest request = requestService.getRequestById(reqId);
+            if (request.getCustomer().getId().equals(customer.getId()) == false)
+                throw new ServiceRequestException("Request is not belong to customer");
+            if (request.getStatus() != ServiceRequestStatus.UNDER_SELECTION)
+                throw new ServiceRequestException("Request can not be accepted due to its status");
+
+            ServiceOffer offer = offerService.getOfferById(offerId);
+            if (offer.getRequest().getId().equals(request.getId()) == false)
+                throw new ServiceOfferException("Offer is not belong to request");
+            request.setStatus(ServiceRequestStatus.ON_GOING);
+            String message = requestService.updateServiceRequest(request) ? "Accepted successfully" : "Accepting failed";
+            return new ServiceOfferAcceptResult(offerId, message);
+        } catch (CustomerException | ServiceRequestException | ServiceOfferException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServiceOfferPayResult payServiceOfferByCustomer(Long customerId, Long reqId, Long offerId) {
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+
+            ServiceRequest request = requestService.getRequestById(reqId);
+            if (request.getCustomer().getId().equals(customer.getId()) == false)
+                throw new ServiceRequestException("Request is not belong to customer");
+            if (request.getStatus() != ServiceRequestStatus.DONE)
+                throw new ServiceRequestException("Request must be done to pay");
+
+            ServiceOffer offer = offerService.getOfferById(offerId);
+            if (offer.getRequest().getId().equals(request.getId()) == false)
+                throw new ServiceOfferException("Offer is not belong to request");
+
+            if (customer.getCredit() < offer.getPrice())
+                throw new CustomerException("Customer credit is not enough to pay");
+            Provider provider = offer.getProvider();
+            provider.setCredit(provider.getCredit() + offer.getPrice());
+            customer.setCredit(customer.getCredit() - offer.getPrice());
+            customerService.updateCustomer(customer);
+            providerService.updateProvider(provider);
+            request.setStatus(ServiceRequestStatus.PAID);
+            String message = requestService.updateServiceRequest(request) ? "Accepted successfully" : "Accepting failed";
+            return new ServiceOfferPayResult(offerId, message);
+        } catch (CustomerException | ServiceRequestException | ServiceOfferException e) {
             throw new ManagerException(e);
         }
     }

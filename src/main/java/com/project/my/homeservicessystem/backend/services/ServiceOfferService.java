@@ -51,6 +51,10 @@ public class ServiceOfferService {
         return repository.findAll(BY_PRICE_ASC);
     }
 
+    public ServiceOffer getOfferById(Long offerId) throws ServiceOfferException {
+        return repository.findById(offerId).orElseThrow(() -> new ServiceOfferException("Offer Id is not exist"));
+    }
+
     public boolean updateServiceOffer(ServiceOffer serviceOffer) {
         if (serviceOffer.getId() == null || repository.findById(serviceOffer.getId()).isPresent() == false)
             return false;

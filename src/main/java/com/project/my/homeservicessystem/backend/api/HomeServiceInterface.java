@@ -49,4 +49,12 @@ public interface HomeServiceInterface {
     ServiceRequestsList getCustomerRequests(Long id);
 
     ServiceRequestCancelResult cancelServiceRequestByCustomer(Long customerId, Long reqId);
+
+
+    //Service offers
+    ServiceOffersList getOffersOfCustomerRequest(Long customerId, Long reqId);
+
+    ServiceOfferAcceptResult acceptServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
+
+    ServiceOfferPayResult payServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
 }

@@ -52,7 +52,7 @@ public class ServiceRequestService {
         return true;
     }
 
-    public ServiceRequest getRequestsById(Long reqId) throws ServiceRequestException {
+    public ServiceRequest getRequestById(Long reqId) throws ServiceRequestException {
         return repository.findById(reqId).orElseThrow(() -> new ServiceRequestException("Request Id is not exists."));
     }
 
