@@ -84,4 +84,15 @@ public class CustomerController {
                     HttpStatus.NO_CONTENT, e.getLocalizedMessage());
         }
     }
+
+    @PutMapping("/{customerId}/request/{reqId}/cancel")
+    public ResponseEntity<ServiceRequestCancelResult> cancelRequest(@PathVariable Long customerId, @PathVariable Long reqId) {
+        try {
+            ServiceRequestCancelResult result = manager.cancelServiceRequestByCustomer(customerId, reqId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, e.getLocalizedMessage());
+        }
+    }
 }

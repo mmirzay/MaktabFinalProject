@@ -42,7 +42,11 @@ public interface HomeServiceInterface {
 
     ServiceDeleteResult deleteServiceById(Long id);
 
+
+    //Service Requests
     CustomerServiceRequestResult requestServiceByCustomer(Long id, CustomerServiceRequestParam param);
 
     ServiceRequestsList getCustomerRequests(Long id);
+
+    ServiceRequestCancelResult cancelServiceRequestByCustomer(Long customerId, Long reqId);
 }

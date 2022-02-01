@@ -52,6 +52,10 @@ public class ServiceRequestService {
         return true;
     }
 
+    public ServiceRequest getRequestsById(Long reqId) throws ServiceRequestException {
+        return repository.findById(reqId).orElseThrow(() -> new ServiceRequestException("Request Id is not exists."));
+    }
+
     public List<ServiceRequest> getRequestsByStatus(ServiceRequestStatus status) {
         return repository.findByStatus(status);
     }
@@ -66,4 +70,5 @@ public class ServiceRequestService {
         repository.deleteById(id);
         return true;
     }
+
 }

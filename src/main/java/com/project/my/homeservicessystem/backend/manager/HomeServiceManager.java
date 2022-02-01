@@ -6,6 +6,7 @@ import com.project.my.homeservicessystem.backend.api.dto.out.*;
 import com.project.my.homeservicessystem.backend.entities.services.Service;
 import com.project.my.homeservicessystem.backend.entities.services.ServiceCategory;
 import com.project.my.homeservicessystem.backend.entities.services.ServiceRequest;
+import com.project.my.homeservicessystem.backend.entities.services.ServiceRequestStatus;
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
 import com.project.my.homeservicessystem.backend.exceptions.*;
@@ -57,11 +58,8 @@ public class HomeServiceManager implements HomeServiceInterface {
     @Override
     public CustomerRegisterResult registerCustomer(CustomerRegisterParam registerParam) {
         try {
-            Role role = roleService.getRoleByName(registerParam.getRole().getName());
-            if (role == null)
-                throw new RoleException("No such role exists.");
-            registerParam.setRole(role);
-            Customer toRegister = createCustomer(registerParam);
+            Role role = roleService.getRoleById(registerParam.getRoleId());
+            Customer toRegister = createCustomer(registerParam, role);
             Customer registered = customerService.addCustomer(toRegister);
             return new CustomerRegisterResult(registered.getId());
         } catch (CustomerException | RoleException e) {
@@ -237,14 +235,33 @@ public class HomeServiceManager implements HomeServiceInterface {
         }
     }
 
+    @Override
+    public ServiceRequestCancelResult cancelServiceRequestByCustomer(Long customerId, Long reqId) {
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+            ServiceRequest request = requestService.getRequestsById(reqId);
+            if (request.getCustomer().getId().equals(customer.getId()) == false)
+                throw new ServiceRequestException("Request is not belong to customer");
+            if (request.getStatus() == ServiceRequestStatus.DONE ||
+                    request.getStatus() == ServiceRequestStatus.PAID ||
+                    request.getStatus() == ServiceRequestStatus.CANCELED)
+                throw new ServiceRequestException("Request can not be canceled due to its status");
+            request.setStatus(ServiceRequestStatus.CANCELED);
+            String message = requestService.updateServiceRequest(request) ? "Canceled successfully" : "Canceling failed.";
+            return new ServiceRequestCancelResult(reqId, message);
+        } catch (CustomerException | ServiceRequestException e) {
+            throw new ManagerException(e);
+        }
+    }
+
     private Role createRole(RoleCreateParam createParam) {
         return new Role(createParam.getName());
     }
 
-    private Customer createCustomer(CustomerRegisterParam registerParam) {
+    private Customer createCustomer(CustomerRegisterParam registerParam, Role role) {
         return Customer.of(registerParam.getEmail(),
                 registerParam.getPassword(),
-                registerParam.getRole(),
+                role,
                 registerParam.getFirstName(),
                 registerParam.getLastName());
     }
