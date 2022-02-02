@@ -1,12 +1,8 @@
 package com.project.my.homeservicessystem.backend.controllers;
 
 import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
-import com.project.my.homeservicessystem.backend.api.dto.in.ProviderRegisterParam;
-import com.project.my.homeservicessystem.backend.api.dto.in.ProviderUpdatePasswordParam;
-import com.project.my.homeservicessystem.backend.api.dto.in.ProviderUpdateProfileParam;
-import com.project.my.homeservicessystem.backend.api.dto.out.ProviderProfileResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.ProviderRegisterResult;
-import com.project.my.homeservicessystem.backend.api.dto.out.ProviderUpdateResult;
+import com.project.my.homeservicessystem.backend.api.dto.in.*;
+import com.project.my.homeservicessystem.backend.api.dto.out.*;
 import com.project.my.homeservicessystem.backend.exceptions.ManagerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,6 +53,94 @@ public class ProviderController {
     public ResponseEntity<ProviderUpdateResult> updatePassword(@PathVariable Long id, @RequestBody ProviderUpdatePasswordParam param) {
         try {
             ProviderUpdateResult result = manager.updateProviderPassword(id, param);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/{providerId}/service")
+    public ResponseEntity<ProviderAddServiceResult> addService(@PathVariable Long providerId, @RequestBody ProviderAddServiceParam param) {
+        try {
+            ProviderAddServiceResult result = manager.addServiceForProvider(providerId, param);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @GetMapping("/{providerId}/service")
+    public ResponseEntity<ServicesList> servicesList(@PathVariable Long providerId) {
+        try {
+            ServicesList result = manager.getProviderServices(providerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/{providerId}/offer")
+    public ResponseEntity<ProviderServiceOfferResult> offerToServiceRequest(@PathVariable Long providerId, @RequestBody ProviderServiceOfferParam param) {
+        try {
+            ProviderServiceOfferResult result = manager.addProviderServiceOffer(providerId, param);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @GetMapping("/{providerId}/offer")
+    public ResponseEntity<ServiceOffersList> offersList(@PathVariable Long providerId) {
+        try {
+            ServiceOffersList result = manager.getProviderOffers(providerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, e.getLocalizedMessage());
+        }
+    }
+
+    @PutMapping("/{providerId}/offer/{offerId}/cancel")
+    public ResponseEntity<ServiceOfferCancelResult> cancelOffer(@PathVariable Long providerId, @PathVariable Long offerId) {
+        try {
+            ServiceOfferCancelResult result = manager.cancelServiceOfferByProvider(providerId, offerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @PutMapping("/{providerId}/offer/{offerId}/start")
+    public ResponseEntity<ServiceOfferStartResult> startOffer(@PathVariable Long providerId, @PathVariable Long offerId) {
+        try {
+            ServiceOfferStartResult result = manager.startServiceOfferByProvider(providerId, offerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @PutMapping("/{providerId}/offer/{offerId}/finish")
+    public ResponseEntity<ServiceOfferFinishResult> finishOffer(@PathVariable Long providerId, @PathVariable Long offerId) {
+        try {
+            ServiceOfferFinishResult result = manager.finishServiceOfferByProvider(providerId, offerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @PutMapping("/{customerId}/request/{reqId}/offer/{offerId}/pay")
+    public ResponseEntity<ServiceOfferPayResult> payOfferByCustomer(@PathVariable Long customerId, @PathVariable Long reqId, @PathVariable Long offerId) {
+        try {
+            ServiceOfferPayResult result = manager.payServiceOfferByCustomer(customerId, reqId,offerId);
             return ResponseEntity.ok(result);
         } catch (ManagerException e) {
             throw new ResponseStatusException(

@@ -31,6 +31,20 @@ public interface HomeServiceInterface {
 
     ProviderUpdateResult updateProviderPassword(Long id, ProviderUpdatePasswordParam param);
 
+    ProviderAddServiceResult addServiceForProvider(Long providerId, ProviderAddServiceParam param);
+
+    ServicesList getProviderServices(Long providerId);
+
+    ProviderServiceOfferResult addProviderServiceOffer(Long providerId, ProviderServiceOfferParam param);
+
+    ServiceOffersList getProviderOffers(Long providerId);
+
+    ServiceOfferCancelResult cancelServiceOfferByProvider(Long providerId, Long offerId);
+
+    ServiceOfferStartResult startServiceOfferByProvider(Long providerId, Long offerId);
+
+    ServiceOfferFinishResult finishServiceOfferByProvider(Long providerId, Long offerId);
+
 
     //ServiceCategories
     ServiceCategoryCreateResult addServiceCategory(ServiceCategoryCreateParam createParam);
@@ -52,10 +66,11 @@ public interface HomeServiceInterface {
     ServiceDeleteResult deleteServiceById(Long id);
 
 
+
     //Service Requests
     CustomerServiceRequestResult requestServiceByCustomer(Long id, CustomerServiceRequestParam param);
 
-    ServiceRequestsList getCustomerRequests(Long id);
+    ServiceRequestsList getCustomerRequests(Long customerId);
 
     ServiceRequestCancelResult cancelServiceRequestByCustomer(Long customerId, Long reqId);
 
@@ -66,5 +81,4 @@ public interface HomeServiceInterface {
     ServiceOfferAcceptResult acceptServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
 
     ServiceOfferPayResult payServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
-
 }

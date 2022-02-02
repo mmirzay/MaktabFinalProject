@@ -137,7 +137,6 @@ public class HomeServiceManager implements HomeServiceInterface {
                     .credit(provider.getCredit())
                     .status(provider.getStatus())
                     .profilePhotoUrl(provider.getProfilePhotoUrl())
-                    .services(List.copyOf(provider.getServices()))
                     .build();
         } catch (ProviderException e) {
             throw new ManagerException(e);
@@ -170,6 +169,119 @@ public class HomeServiceManager implements HomeServiceInterface {
             String message = providerService.updateProvider(provider) ? "updated successfully." : "updating failed!";
             return new ProviderUpdateResult(id, message);
         } catch (ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ProviderAddServiceResult addServiceForProvider(Long providerId, ProviderAddServiceParam param) {
+        try {
+            Provider provider = providerService.getProviderById(providerId);
+            Service service = serviceService.getServiceById(param.getServiceId());
+            if (provider.getServices().contains(service))
+                throw new ProviderException("Service is added before.");
+            provider.getServices().add(service);
+            String message = providerService.updateProvider(provider) ? "added successfully." : "adding failed!";
+            return new ProviderAddServiceResult(service.getId(), message);
+        } catch (ServiceException | ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServicesList getProviderServices(Long providerId) {
+        try {
+            Provider provider = providerService.getProviderById(providerId);
+            if (provider.getServices().isEmpty())
+                throw new ProviderException("Services list is empty");
+            return new ServicesList(List.copyOf(provider.getServices()));
+        } catch (ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ProviderServiceOfferResult addProviderServiceOffer(Long providerId, ProviderServiceOfferParam param) {
+        try {
+            Provider provider = providerService.getProviderById(providerId);
+            ServiceRequest request = requestService.getRequestById(param.getRequestId());
+            if (provider.getServices().contains(request.getService()) == false)
+                throw new ProviderException("Requested service is not provided");
+            ServiceOffer toAdd = ServiceOffer.of(provider, request, param.getPrice(), param.getStartHour(), param.getDurationInHours());
+            ServiceOffer added = offerService.addServiceOffer(toAdd);
+            return new ProviderServiceOfferResult(added.getId());
+        } catch (ProviderException | ServiceRequestException | ServiceOfferException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServiceOffersList getProviderOffers(Long providerId) {
+        try {
+            Provider provider = providerService.getProviderById(providerId);
+            List<ServiceOffer> offers = offerService.getOffersOfProvider(provider);
+            if (offers.isEmpty())
+                throw new ProviderException("Offers list is empty");
+            return new ServiceOffersList(offers);
+        } catch (ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServiceOfferCancelResult cancelServiceOfferByProvider(Long providerId, Long offerId) {
+        try {
+            Provider provider = providerService.getProviderById(providerId);
+            ServiceOffer offer = offerService.getOfferById(offerId);
+            if (offer.getProvider().getId().equals(provider.getId()) == false)
+                throw new ServiceOfferException("Offer is not belong to provider");
+            if (offer.getStatus() != ServiceOfferStatus.UNDER_ACCEPTING)
+                throw new ServiceOfferException("Offer can not be canceled due to its status");
+            offer.setStatus(ServiceOfferStatus.CANCELED);
+            String message = offerService.updateServiceOffer(offer) ? "Canceled successfully" : "Canceling failed";
+            return new ServiceOfferCancelResult(offerId, message);
+        } catch (ProviderException | ServiceOfferException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServiceOfferStartResult startServiceOfferByProvider(Long providerId, Long offerId) {
+        try {
+            Provider provider = providerService.getProviderById(providerId);
+            ServiceOffer offer = offerService.getOfferById(offerId);
+            if (offer.getProvider().getId().equals(provider.getId()) == false)
+                throw new ServiceOfferException("Offer is not belong to provider");
+            if (offer.getStatus() != ServiceOfferStatus.ACCEPTED)
+                throw new ServiceOfferException("Offer can not be started due to its status");
+
+            ServiceRequest request = offer.getRequest();
+            request.setStatus(ServiceRequestStatus.STARTED);
+            String message = requestService.updateServiceRequest(request) ? "Started successfully" : "Starting failed";
+            return new ServiceOfferStartResult(offerId, message);
+        } catch (ProviderException | ServiceOfferException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ServiceOfferFinishResult finishServiceOfferByProvider(Long providerId, Long offerId) {
+        try {
+            Provider provider = providerService.getProviderById(providerId);
+            ServiceOffer offer = offerService.getOfferById(offerId);
+            if (offer.getProvider().getId().equals(provider.getId()) == false)
+                throw new ServiceOfferException("Offer is not belong to provider");
+            if (offer.getStatus() != ServiceOfferStatus.ACCEPTED)
+                throw new ServiceOfferException("Offer can not be finished due to its status");
+
+            ServiceRequest request = offer.getRequest();
+            if (request.getStatus() != ServiceRequestStatus.STARTED)
+                throw new ServiceOfferException("Offer of Request must be started before finishing");
+
+            request.setStatus(ServiceRequestStatus.UNDER_CONFIRMING);
+            String message = requestService.updateServiceRequest(request) ? "Finished successfully" : "Finishing failed";
+            return new ServiceOfferFinishResult(offerId, message);
+        } catch (ProviderException | ServiceOfferException e) {
             throw new ManagerException(e);
         }
     }
@@ -284,9 +396,9 @@ public class HomeServiceManager implements HomeServiceInterface {
     }
 
     @Override
-    public ServiceRequestsList getCustomerRequests(Long id) {
+    public ServiceRequestsList getCustomerRequests(Long customerId) {
         try {
-            Customer customer = customerService.getCustomerById(id);
+            Customer customer = customerService.getCustomerById(customerId);
             List<ServiceRequest> requests = requestService.getRequestsOfCustomer(customer);
             if (requests.isEmpty())
                 throw new CustomerException("Requests list is empty.");
@@ -307,6 +419,12 @@ public class HomeServiceManager implements HomeServiceInterface {
                     request.getStatus() == ServiceRequestStatus.PAID ||
                     request.getStatus() == ServiceRequestStatus.CANCELED)
                 throw new ServiceRequestException("Request can not be canceled due to its status");
+            for (ServiceOffer offer : offerService.getOffersOfServiceRequest(request))
+                if (offer.getStatus() == ServiceOfferStatus.ACCEPTED) {
+                    offer.setStatus(ServiceOfferStatus.REJECTED);
+                    offerService.updateServiceOffer(offer);
+                    break;
+                }
             request.setStatus(ServiceRequestStatus.CANCELED);
             String message = requestService.updateServiceRequest(request) ? "Canceled successfully" : "Canceling failed.";
             return new ServiceRequestCancelResult(reqId, message);
@@ -345,7 +463,12 @@ public class HomeServiceManager implements HomeServiceInterface {
             ServiceOffer offer = offerService.getOfferById(offerId);
             if (offer.getRequest().getId().equals(request.getId()) == false)
                 throw new ServiceOfferException("Offer is not belong to request");
+            if (offer.getStatus() != ServiceOfferStatus.UNDER_ACCEPTING)
+                throw new ServiceOfferException("Offer can not be accepted due to its status");
+            offer.setStatus(ServiceOfferStatus.ACCEPTED);
+
             request.setStatus(ServiceRequestStatus.ON_GOING);
+            offerService.updateServiceOffer(offer);
             String message = requestService.updateServiceRequest(request) ? "Accepted successfully" : "Accepting failed";
             return new ServiceOfferAcceptResult(offerId, message);
         } catch (CustomerException | ServiceRequestException | ServiceOfferException e) {
@@ -367,9 +490,12 @@ public class HomeServiceManager implements HomeServiceInterface {
             ServiceOffer offer = offerService.getOfferById(offerId);
             if (offer.getRequest().getId().equals(request.getId()) == false)
                 throw new ServiceOfferException("Offer is not belong to request");
+            if (offer.getStatus() != ServiceOfferStatus.ACCEPTED)
+                throw new ServiceOfferException("Offer can not be paid due to its status");
 
             if (customer.getCredit() < offer.getPrice())
                 throw new CustomerException("Customer credit is not enough to pay");
+
             Provider provider = offer.getProvider();
             provider.setCredit(provider.getCredit() + offer.getPrice());
             customer.setCredit(customer.getCredit() - offer.getPrice());
