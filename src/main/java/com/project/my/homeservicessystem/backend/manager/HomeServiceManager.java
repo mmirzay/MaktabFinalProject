@@ -114,6 +114,67 @@ public class HomeServiceManager implements HomeServiceInterface {
     }
 
     @Override
+    public ProviderRegisterResult registerProvider(ProviderRegisterParam param) {
+        try {
+            Role role = roleService.getRoleById(param.getRoleId());
+            Provider toRegister = createProvider(param, role);
+            Provider registered = providerService.addProvider(toRegister);
+            return new ProviderRegisterResult(registered.getId());
+        } catch (RoleException | ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ProviderProfileResult getProviderProfile(Long id) {
+        try {
+            Provider provider = providerService.getProviderById(id);
+            return ProviderProfileResult.builder()
+                    .firstName(provider.getFirstName())
+                    .lastName(provider.getLastName())
+                    .email(provider.getEmail())
+                    .registeredDate(provider.getRegisterDate())
+                    .credit(provider.getCredit())
+                    .status(provider.getStatus())
+                    .profilePhotoUrl(provider.getProfilePhotoUrl())
+                    .services(List.copyOf(provider.getServices()))
+                    .build();
+        } catch (ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ProviderUpdateResult updateProviderProfile(Long id, ProviderUpdateProfileParam param) {
+        try {
+            Provider provider = providerService.getProviderById(id);
+            provider.setFirstName(param.getFirstName());
+            provider.setLastName(param.getLastName());
+            provider.setProfilePhotoUrl(param.getProfilePhotoUrl());
+            String message = providerService.updateProvider(provider) ? "updated successfully." : "updating failed!";
+            return new ProviderUpdateResult(id, message);
+        } catch (ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public ProviderUpdateResult updateProviderPassword(Long id, ProviderUpdatePasswordParam param) {
+        try {
+            Provider provider = providerService.getProviderById(id);
+            if (provider.getPassword().equals(param.getOldPassword()) == false)
+                throw new ProviderException("Current password is not correct.");
+            if (Validator.validatePassword(param.getNewPassword()) == false)
+                throw new ProviderException("New password is not valid.");
+            provider.setPassword(param.getNewPassword());
+            String message = providerService.updateProvider(provider) ? "updated successfully." : "updating failed!";
+            return new ProviderUpdateResult(id, message);
+        } catch (ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
     public ServiceCategoryCreateResult addServiceCategory(ServiceCategoryCreateParam createParam) {
         ServiceCategory toAdd = createServiceCategory(createParam);
         try {
@@ -328,6 +389,14 @@ public class HomeServiceManager implements HomeServiceInterface {
 
     private Customer createCustomer(CustomerRegisterParam registerParam, Role role) {
         return Customer.of(registerParam.getEmail(),
+                registerParam.getPassword(),
+                role,
+                registerParam.getFirstName(),
+                registerParam.getLastName());
+    }
+
+    private Provider createProvider(ProviderRegisterParam registerParam, Role role) {
+        return Provider.of(registerParam.getEmail(),
                 registerParam.getPassword(),
                 role,
                 registerParam.getFirstName(),

@@ -22,6 +22,15 @@ public interface HomeServiceInterface {
 
     CustomerUpdateResult updateCustomerPassword(Long id, CustomerUpdatePasswordParam param);
 
+    //Providers
+    ProviderRegisterResult registerProvider(ProviderRegisterParam param);
+
+    ProviderProfileResult getProviderProfile(Long id);
+
+    ProviderUpdateResult updateProviderProfile(Long id, ProviderUpdateProfileParam param);
+
+    ProviderUpdateResult updateProviderPassword(Long id, ProviderUpdatePasswordParam param);
+
 
     //ServiceCategories
     ServiceCategoryCreateResult addServiceCategory(ServiceCategoryCreateParam createParam);
@@ -57,4 +66,5 @@ public interface HomeServiceInterface {
     ServiceOfferAcceptResult acceptServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
 
     ServiceOfferPayResult payServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
+
 }

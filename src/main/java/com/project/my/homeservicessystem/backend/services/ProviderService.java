@@ -40,6 +40,11 @@ public class ProviderService {
         return repository.findByEmail(email);
     }
 
+
+    public Provider getProviderById(Long id) throws ProviderException {
+        return repository.findById(id).orElseThrow(() -> new ProviderException("Provider Id is not exist"));
+    }
+
     public boolean updateProvider(Provider provider) {
         if (provider.getId() == null || repository.findById(provider.getId()).isPresent() == false)
             return false;
@@ -53,4 +58,5 @@ public class ProviderService {
         repository.deleteById(id);
         return true;
     }
+
 }
