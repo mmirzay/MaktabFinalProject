@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Setter
 @Getter
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"provider_id", "request_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"provider_id", "request_id", "status"}))
 public class ServiceOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +27,12 @@ public class ServiceOffer {
     private Provider provider;
     @ManyToOne(optional = false)
     private ServiceRequest request;
+    private ServiceOfferStatus status;
+    private Date statusDate;
 
     private ServiceOffer(Date submitDate, int startHour, double price, int durationInHours, Provider provider, ServiceRequest request) {
-        this(null, submitDate, startHour, price, durationInHours, provider, request);
+        this(null, submitDate, startHour, price, durationInHours, provider, request, null, null);
+        setStatus(ServiceOfferStatus.UNDER_ACCEPTING);
     }
 
     public static ServiceOffer of(Provider provider, ServiceRequest request, double price) {
@@ -42,5 +45,10 @@ public class ServiceOffer {
 
     public static ServiceOffer of(Provider provider, ServiceRequest request, double price, int startHour, int durationInHours) {
         return new ServiceOffer(new Date(), startHour, price, durationInHours, provider, request);
+    }
+
+    public void setStatus(ServiceOfferStatus status) {
+        this.status = status;
+        this.statusDate = new Date();
     }
 }
