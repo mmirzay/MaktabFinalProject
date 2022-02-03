@@ -107,10 +107,21 @@ public class CustomerController {
         }
     }
 
-    @PutMapping("/{customerId}/request/{reqId}/offer/{offerId}")
+    @PutMapping("/{customerId}/request/{reqId}/offer/{offerId}/accept")
     public ResponseEntity<ServiceOfferAcceptResult> acceptOfferByCustomer(@PathVariable Long customerId, @PathVariable Long reqId, @PathVariable Long offerId) {
         try {
-            ServiceOfferAcceptResult result = manager.acceptServiceOfferByCustomer(customerId, reqId,offerId);
+            ServiceOfferAcceptResult result = manager.acceptServiceOfferByCustomer(customerId, reqId, offerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @PutMapping("/{customerId}/request/{reqId}/offer/{offerId}/confirm")
+    public ResponseEntity<ServiceOfferConfirmResult> confirmOfferByCustomer(@PathVariable Long customerId, @PathVariable Long reqId, @PathVariable Long offerId) {
+        try {
+            ServiceOfferConfirmResult result = manager.confirmServiceOfferByCustomer(customerId, reqId, offerId);
             return ResponseEntity.ok(result);
         } catch (ManagerException e) {
             throw new ResponseStatusException(
@@ -121,7 +132,7 @@ public class CustomerController {
     @PutMapping("/{customerId}/request/{reqId}/offer/{offerId}/pay")
     public ResponseEntity<ServiceOfferPayResult> payOfferByCustomer(@PathVariable Long customerId, @PathVariable Long reqId, @PathVariable Long offerId) {
         try {
-            ServiceOfferPayResult result = manager.payServiceOfferByCustomer(customerId, reqId,offerId);
+            ServiceOfferPayResult result = manager.payServiceOfferByCustomer(customerId, reqId, offerId);
             return ResponseEntity.ok(result);
         } catch (ManagerException e) {
             throw new ResponseStatusException(

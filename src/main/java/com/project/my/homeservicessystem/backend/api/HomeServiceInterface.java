@@ -66,7 +66,6 @@ public interface HomeServiceInterface {
     ServiceDeleteResult deleteServiceById(Long id);
 
 
-
     //Service Requests
     CustomerServiceRequestResult requestServiceByCustomer(Long id, CustomerServiceRequestParam param);
 
@@ -80,5 +79,8 @@ public interface HomeServiceInterface {
 
     ServiceOfferAcceptResult acceptServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
 
+    ServiceOfferConfirmResult confirmServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
+
     ServiceOfferPayResult payServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
+
 }

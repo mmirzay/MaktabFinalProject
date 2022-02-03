@@ -477,6 +477,31 @@ public class HomeServiceManager implements HomeServiceInterface {
     }
 
     @Override
+    public ServiceOfferConfirmResult confirmServiceOfferByCustomer(Long customerId, Long reqId, Long offerId) {
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+
+            ServiceRequest request = requestService.getRequestById(reqId);
+            if (request.getCustomer().getId().equals(customer.getId()) == false)
+                throw new ServiceRequestException("Request is not belong to customer");
+            if (request.getStatus() != ServiceRequestStatus.UNDER_CONFIRMING)
+                throw new ServiceRequestException("Request can not be confirmed due to its status");
+
+            ServiceOffer offer = offerService.getOfferById(offerId);
+            if (offer.getRequest().getId().equals(request.getId()) == false)
+                throw new ServiceOfferException("Offer is not belong to request");
+            if (offer.getStatus() != ServiceOfferStatus.ACCEPTED)
+                throw new ServiceOfferException("Offer can not be confirmed due to its status");
+
+            request.setStatus(ServiceRequestStatus.DONE);
+            String message = requestService.updateServiceRequest(request) ? "Confirmed successfully" : "Confirming failed";
+            return new ServiceOfferConfirmResult(offerId, message);
+        } catch (CustomerException | ServiceRequestException | ServiceOfferException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
     public ServiceOfferPayResult payServiceOfferByCustomer(Long customerId, Long reqId, Long offerId) {
         try {
             Customer customer = customerService.getCustomerById(customerId);
