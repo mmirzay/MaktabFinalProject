@@ -136,15 +136,4 @@ public class ProviderController {
                     HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
         }
     }
-
-    @PutMapping("/{customerId}/request/{reqId}/offer/{offerId}/pay")
-    public ResponseEntity<ServiceOfferPayResult> payOfferByCustomer(@PathVariable Long customerId, @PathVariable Long reqId, @PathVariable Long offerId) {
-        try {
-            ServiceOfferPayResult result = manager.payServiceOfferByCustomer(customerId, reqId,offerId);
-            return ResponseEntity.ok(result);
-        } catch (ManagerException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
-        }
-    }
 }
