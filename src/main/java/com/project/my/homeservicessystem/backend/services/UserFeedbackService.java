@@ -18,13 +18,12 @@ public class UserFeedbackService {
     private final UserFeedbackRepository repository;
 
     public UserFeedback addUserFeedback(UserFeedback userFeedback) throws UserFeedBackException {
-        if (userFeedback.getRate() < 0)
+        if (userFeedback.getRate() < 0 || userFeedback.getRate() > 5)
             throw new UserFeedBackException("Rate is NOT valid");
         if (userFeedback.getProvider().getServices().contains(userFeedback.getService()) == false)
             throw new UserFeedBackException("Service is NOT defined for Provider");
         try {
             return repository.save(userFeedback);
-
         } catch (DataIntegrityViolationException e) {
             if (e.getRootCause() instanceof SQLIntegrityConstraintViolationException)
                 throw new UserFeedBackException("Feedback is Duplicate.");

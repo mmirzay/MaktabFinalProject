@@ -45,6 +45,8 @@ public interface HomeServiceInterface {
 
     ServiceOfferFinishResult finishServiceOfferByProvider(Long providerId, Long offerId);
 
+    UserFeedBacksList getProviderFeedbacks(Long providerId);
+
 
     //ServiceCategories
     ServiceCategoryCreateResult addServiceCategory(ServiceCategoryCreateParam createParam);
@@ -82,5 +84,10 @@ public interface HomeServiceInterface {
     ServiceOfferConfirmResult confirmServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
 
     ServiceOfferPayResult payServiceOfferByCustomer(Long customerId, Long reqId, Long offerId);
+
+    //user feedbacks
+    CustomerFeedbackResult addCustomerFeedback(Long customerId, CustomerFeedbackParam param);
+
+    UserFeedBacksList getCustomerFeedbacks(Long customerId);
 
 }

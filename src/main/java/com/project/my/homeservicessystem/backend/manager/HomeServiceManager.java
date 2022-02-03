@@ -7,6 +7,7 @@ import com.project.my.homeservicessystem.backend.entities.services.*;
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
+import com.project.my.homeservicessystem.backend.entities.users.UserFeedback;
 import com.project.my.homeservicessystem.backend.exceptions.*;
 import com.project.my.homeservicessystem.backend.services.*;
 import com.project.my.homeservicessystem.backend.utilities.Validator;
@@ -24,6 +25,7 @@ public class HomeServiceManager implements HomeServiceInterface {
     private final ServiceService serviceService;
     private final ServiceRequestService requestService;
     private final ServiceOfferService offerService;
+    private final UserFeedbackService feedbackService;
 
     @Override
     public RoleCreateResult addRole(RoleCreateParam createParam) {
@@ -287,6 +289,17 @@ public class HomeServiceManager implements HomeServiceInterface {
     }
 
     @Override
+    public UserFeedBacksList getProviderFeedbacks(Long providerId) {
+        try {
+            Provider provider = providerService.getProviderById(providerId);
+            List<UserFeedback> feedbacks = feedbackService.getAllFeedbacksOfProvider(provider);
+            return new UserFeedBacksList(feedbacks);
+        } catch (ProviderException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
     public ServiceCategoryCreateResult addServiceCategory(ServiceCategoryCreateParam createParam) {
         ServiceCategory toAdd = createServiceCategory(createParam);
         try {
@@ -530,6 +543,35 @@ public class HomeServiceManager implements HomeServiceInterface {
             String message = requestService.updateServiceRequest(request) ? "Accepted successfully" : "Accepting failed";
             return new ServiceOfferPayResult(offerId, message);
         } catch (CustomerException | ServiceRequestException | ServiceOfferException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public CustomerFeedbackResult addCustomerFeedback(Long customerId, CustomerFeedbackParam param) {
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+            Provider provider = providerService.getProviderById(param.getProviderId());
+            Service service = serviceService.getServiceById(param.getServiceId());
+            UserFeedback toAdd = UserFeedback.of(customer, provider, service, param.getRate(), param.getText());
+            UserFeedback added = feedbackService.addUserFeedback(toAdd);
+            provider.setScore(provider.getScore() + added.getRate());
+            String message = providerService.updateProvider(provider) ? "Added successfully" : "Adding failed";
+            return new CustomerFeedbackResult(added.getId(), message);
+        } catch (CustomerException | ProviderException | ServiceException | UserFeedBackException e) {
+            throw new ManagerException(e);
+        }
+    }
+
+    @Override
+    public UserFeedBacksList getCustomerFeedbacks(Long customerId) {
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+            List<UserFeedback> feedbacks = feedbackService.getAllFeedbacksOfCustomer(customer);
+            if (feedbacks.isEmpty())
+                throw new UserFeedBackException("Feedback list is empty");
+            return new UserFeedBacksList(feedbacks);
+        } catch (CustomerException | UserFeedBackException e) {
             throw new ManagerException(e);
         }
     }

@@ -1,10 +1,7 @@
 package com.project.my.homeservicessystem.backend.controllers;
 
 import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
-import com.project.my.homeservicessystem.backend.api.dto.in.CustomerRegisterParam;
-import com.project.my.homeservicessystem.backend.api.dto.in.CustomerServiceRequestParam;
-import com.project.my.homeservicessystem.backend.api.dto.in.CustomerUpdatePasswordParam;
-import com.project.my.homeservicessystem.backend.api.dto.in.CustomerUpdateProfileParam;
+import com.project.my.homeservicessystem.backend.api.dto.in.*;
 import com.project.my.homeservicessystem.backend.api.dto.out.*;
 import com.project.my.homeservicessystem.backend.exceptions.ManagerException;
 import lombok.RequiredArgsConstructor;
@@ -137,6 +134,28 @@ public class CustomerController {
         } catch (ManagerException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/{customerId}/feedback")
+    public ResponseEntity<CustomerFeedbackResult> feedbackForProviderService(@PathVariable Long customerId, @RequestBody CustomerFeedbackParam param) {
+        try {
+            CustomerFeedbackResult result = manager.addCustomerFeedback(customerId, param);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+        }
+    }
+
+    @GetMapping("/{customerId}/feedback")
+    public ResponseEntity<UserFeedBacksList> feedbacksList(@PathVariable Long customerId) {
+        try {
+            UserFeedBacksList result = manager.getCustomerFeedbacks(customerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, e.getLocalizedMessage());
         }
     }
 }

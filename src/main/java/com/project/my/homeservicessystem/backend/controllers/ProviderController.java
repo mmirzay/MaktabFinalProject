@@ -136,4 +136,15 @@ public class ProviderController {
                     HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
         }
     }
+
+    @GetMapping("/{providerId}/feedback")
+    public ResponseEntity<UserFeedBacksList> feedbacksList(@PathVariable Long providerId) {
+        try {
+            UserFeedBacksList result = manager.getProviderFeedbacks(providerId);
+            return ResponseEntity.ok(result);
+        } catch (ManagerException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, e.getLocalizedMessage());
+        }
+    }
 }
