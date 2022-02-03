@@ -7,6 +7,7 @@ import com.project.my.homeservicessystem.backend.entities.services.ServiceReques
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
+import com.project.my.homeservicessystem.backend.exceptions.ServiceOfferException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -192,15 +193,13 @@ class ServiceOfferServiceTest {
 
     @Test
     @Order(7)
-    void deleteServiceOfferById() {
+    void deleteServiceOfferById() throws ServiceOfferException {
         List<ServiceOffer> allServiceOffers = offerService.getAllServiceOffers();
         assertEquals(5, allServiceOffers.size());
 
         ServiceOffer toRemove = allServiceOffers.get(4);
-        assertTrue(offerService.deleteServiceOfferById(toRemove.getId()));
+        offerService.deleteServiceOfferById(toRemove.getId());
         assertEquals(4, offerService.getAllServiceOffers().size());
-
-        assertFalse(offerService.deleteServiceOfferById(toRemove.getId()));
     }
 
 }

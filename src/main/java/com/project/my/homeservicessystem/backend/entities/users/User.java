@@ -32,6 +32,6 @@ public class User {
     private double credit;
 
     public User(String email, String password, Role role, String firstName, String lastName) {
-        this(null, firstName, lastName, email, password, UserStatus.NEW, new Date(), new HashSet(List.of(role)), 0);
+        this(null, firstName, lastName, email, password, UserStatus.NEW, new Date(), new HashSet<>(List.of(role)), 0);
     }
 }

@@ -6,6 +6,7 @@ import com.project.my.homeservicessystem.backend.entities.services.ServiceReques
 import com.project.my.homeservicessystem.backend.entities.services.ServiceRequestStatus;
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
+import com.project.my.homeservicessystem.backend.exceptions.ServiceRequestException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -196,7 +197,7 @@ class ServiceRequestServiceTest {
 
     @Test
     @Order(8)
-    void deleteServiceRequestById() {
+    void deleteServiceRequestById() throws ServiceRequestException {
         List<ServiceRequest> allServiceRequests = requestService.getAllServiceRequests();
         assertEquals(4, allServiceRequests.size());
         ServiceRequest serviceRequest = allServiceRequests.get(3);

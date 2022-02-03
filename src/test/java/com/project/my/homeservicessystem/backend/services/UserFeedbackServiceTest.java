@@ -6,6 +6,7 @@ import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
 import com.project.my.homeservicessystem.backend.entities.users.UserFeedback;
+import com.project.my.homeservicessystem.backend.exceptions.UserFeedBackException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -142,12 +143,11 @@ class UserFeedbackServiceTest {
 
     @Test
     @Order(6)
-    void deleteUserFeedbackById() {
+    void deleteUserFeedbackById() throws UserFeedBackException {
         UserFeedback toRemove = feedbackService.getAllFeedbackOfCustomerAboutProvider(customer1, provider2).get(0);
         assertNotNull(toRemove);
 
-        assertTrue(feedbackService.deleteUserFeedbackById(toRemove.getId()));
-        assertFalse(feedbackService.deleteUserFeedbackById(toRemove.getId()));
+        feedbackService.deleteUserFeedbackById(toRemove.getId());
 
         assertEquals(0, feedbackService.getAllFeedbackOfCustomerAboutProvider(customer1, provider2).size());
     }

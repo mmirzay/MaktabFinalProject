@@ -2,6 +2,7 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Provider;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
+import com.project.my.homeservicessystem.backend.exceptions.ProviderException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -98,10 +99,10 @@ class ProviderServiceTest {
 
     @Test
     @Order(5)
-    void deleteProviderById() {
+    void deleteProviderById() throws ProviderException {
         Provider toRemove = service.getProviderByEmail("validEmail2@mail.com");
         assertNotNull(toRemove);
-        assertTrue(service.deleteProviderById(toRemove.getId()));
+        service.deleteProviderById(toRemove.getId());
         assertEquals(service.getAllProviders().size(), 1);
     }
 }

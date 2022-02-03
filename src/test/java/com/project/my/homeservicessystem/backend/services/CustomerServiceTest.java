@@ -2,6 +2,7 @@ package com.project.my.homeservicessystem.backend.services;
 
 import com.project.my.homeservicessystem.backend.entities.users.Customer;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
+import com.project.my.homeservicessystem.backend.exceptions.CustomerException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -96,10 +97,10 @@ class CustomerServiceTest {
 
     @Test
     @Order(5)
-    void deleteCustomerById() {
+    void deleteCustomerById() throws CustomerException {
         Customer toRemove = service.getCustomerByEmail("validEmail2@mail.com");
         assertNotNull(toRemove);
-        assertTrue(service.deleteCustomerById(toRemove.getId()));
+        service.deleteCustomerById(toRemove.getId());
         assertEquals(service.getAllCustomers().size(), 1);
     }
 }

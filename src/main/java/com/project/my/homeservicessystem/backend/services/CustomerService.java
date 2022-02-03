@@ -51,11 +51,14 @@ public class CustomerService {
         return true;
     }
 
-    public boolean deleteCustomerById(Long id) {
-        if (id == null || repository.findById(id).isPresent() == false)
-            return false;
-        repository.deleteById(id);
-        return true;
+    public void deleteCustomerById(Long id) throws CustomerException {
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getRootCause() instanceof SQLIntegrityConstraintViolationException)
+                throw new CustomerException("Customer has at least one request or feedback.");
+            throw new CustomerException("Some thing wrong while deleting customer.", e);
+        }
     }
 
 

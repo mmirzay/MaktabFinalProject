@@ -52,11 +52,14 @@ public class ProviderService {
         return true;
     }
 
-    public boolean deleteProviderById(Long id) {
-        if (id == null || repository.findById(id).isPresent() == false)
-            return false;
-        repository.deleteById(id);
-        return true;
+    public void deleteProviderById(Long id) throws ProviderException {
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getRootCause() instanceof SQLIntegrityConstraintViolationException)
+                throw new ProviderException("Provider has at least one offer or feedback.");
+            throw new ProviderException("Some thing wrong while deleting provider.", e);
+        }
     }
 
 }

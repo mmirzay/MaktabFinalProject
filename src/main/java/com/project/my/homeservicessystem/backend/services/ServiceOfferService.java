@@ -62,11 +62,12 @@ public class ServiceOfferService {
         return true;
     }
 
-    public boolean deleteServiceOfferById(Long id) {
-        if (id == null || repository.findById(id).isPresent() == false)
-            return false;
-        repository.deleteById(id);
-        return true;
+    public void deleteServiceOfferById(Long id) throws ServiceOfferException {
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new ServiceOfferException("Some thing wrong while deleting service offer.", e);
+        }
     }
 
 }

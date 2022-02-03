@@ -35,6 +35,11 @@ public class UserFeedbackService {
         return repository.findAll();
     }
 
+
+    public UserFeedback getFeedbackById(Long id) throws UserFeedBackException {
+        return repository.findById(id).orElseThrow(() -> new UserFeedBackException("Feedback Id is not exist"));
+    }
+
     public List<UserFeedback> getAllFeedbacksOfCustomer(Customer customer) {
         return repository.findAllByCustomer(customer);
     }
@@ -47,11 +52,12 @@ public class UserFeedbackService {
         return repository.findAllByCustomerAndProvider(customer, provider);
     }
 
-    public boolean deleteUserFeedbackById(Long id) {
-        if (id == null || repository.findById(id).isPresent() == false)
-            return false;
-        repository.deleteById(id);
-        return true;
+    public void deleteUserFeedbackById(Long id) throws UserFeedBackException {
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new UserFeedBackException("Some thing wrong while deleting user feedback.", e);
+        }
     }
 
 }

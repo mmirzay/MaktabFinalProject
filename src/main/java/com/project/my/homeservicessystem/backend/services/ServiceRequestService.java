@@ -64,11 +64,14 @@ public class ServiceRequestService {
         return repository.findByStartDateGreaterThanEqual(date);
     }
 
-    public boolean deleteServiceRequestById(Long id) {
-        if (id == null || repository.findById(id).isPresent() == false)
-            return false;
-        repository.deleteById(id);
-        return true;
+    public void deleteServiceRequestById(Long id) throws ServiceRequestException {
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getRootCause() instanceof SQLIntegrityConstraintViolationException)
+                throw new ServiceRequestException("Service request has at least one offer.");
+            throw new ServiceRequestException("Some thing wrong while deleting service request.", e);
+        }
     }
 
 }

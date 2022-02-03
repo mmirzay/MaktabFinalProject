@@ -90,4 +90,24 @@ public interface HomeServiceInterface {
 
     UserFeedBacksList getCustomerFeedbacks(Long customerId);
 
+    //Admin
+    CustomersList getAllCustomers();
+
+    ProvidersList getAllProviders();
+
+    ServiceRequestsList getAllServiceRequests();
+
+    ServiceOffersList getAllServiceOffers();
+
+    UserFeedBacksList getAllUserFeedbacks();
+
+    CustomerDeleteResult deleteCustomerById(Long id);
+
+    ProviderDeleteResult deleteProviderById(Long id);
+
+    ServiceRequestDeleteResult deleteServiceRequestById(Long id);
+
+    ServiceOfferDeleteResult deleteServiceOfferById(Long id);
+
+    UserFeedbackDeleteResult deleteUserFeedbackById(Long id);
 }

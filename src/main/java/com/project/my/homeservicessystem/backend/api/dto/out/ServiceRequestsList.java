@@ -2,17 +2,12 @@ package com.project.my.homeservicessystem.backend.api.dto.out;
 
 import com.project.my.homeservicessystem.backend.entities.services.ServiceRequest;
 import com.project.my.homeservicessystem.backend.entities.users.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
+@RequiredArgsConstructor
 public class ServiceRequestsList {
-    private List<ServiceRequest> requests;
+    private final List<ServiceRequest> requests;
 }
