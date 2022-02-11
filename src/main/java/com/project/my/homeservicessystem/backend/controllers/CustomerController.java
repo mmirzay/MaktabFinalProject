@@ -1,6 +1,6 @@
 package com.project.my.homeservicessystem.backend.controllers;
 
-import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
+import com.project.my.homeservicessystem.backend.api.CustomerManagerInterface;
 import com.project.my.homeservicessystem.backend.api.dto.in.*;
 import com.project.my.homeservicessystem.backend.api.dto.out.*;
 import com.project.my.homeservicessystem.backend.exceptions.ManagerException;
@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 @RequestMapping("/customer")
 public class CustomerController {
-    private final HomeServiceInterface manager;
+    private final CustomerManagerInterface manager;
 
     @PostMapping("/register")
     public ResponseEntity<CustomerRegisterResult> register(@RequestBody CustomerRegisterParam registerParam) {

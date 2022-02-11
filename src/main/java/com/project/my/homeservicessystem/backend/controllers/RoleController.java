@@ -1,6 +1,6 @@
 package com.project.my.homeservicessystem.backend.controllers;
 
-import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
+import com.project.my.homeservicessystem.backend.api.RoleManagerInterface;
 import com.project.my.homeservicessystem.backend.api.dto.in.RoleCreateParam;
 import com.project.my.homeservicessystem.backend.api.dto.out.RoleCreateResult;
 import com.project.my.homeservicessystem.backend.api.dto.out.RoleDeleteResult;
@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 @RequestMapping("/roles")
 public class RoleController {
-    private final HomeServiceInterface manager;
+    private final RoleManagerInterface manager;
 
     @PostMapping
     public ResponseEntity<RoleCreateResult> create(@RequestBody RoleCreateParam createParam) {

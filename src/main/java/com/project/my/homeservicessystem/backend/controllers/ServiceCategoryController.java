@@ -1,10 +1,12 @@
 package com.project.my.homeservicessystem.backend.controllers;
 
-import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
-import com.project.my.homeservicessystem.backend.api.dto.in.RoleCreateParam;
+import com.project.my.homeservicessystem.backend.api.ServiceCategoryManagerInterface;
 import com.project.my.homeservicessystem.backend.api.dto.in.ServiceCategoryCreateParam;
 import com.project.my.homeservicessystem.backend.api.dto.in.ServiceCategoryUpdateParam;
-import com.project.my.homeservicessystem.backend.api.dto.out.*;
+import com.project.my.homeservicessystem.backend.api.dto.out.ServiceCategoriesList;
+import com.project.my.homeservicessystem.backend.api.dto.out.ServiceCategoryCreateResult;
+import com.project.my.homeservicessystem.backend.api.dto.out.ServiceCategoryDeleteResult;
+import com.project.my.homeservicessystem.backend.api.dto.out.ServiceCategoryUpdateResult;
 import com.project.my.homeservicessystem.backend.exceptions.ManagerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 @RequestMapping("/service-categories")
 public class ServiceCategoryController {
-    private final HomeServiceInterface manager;
+    private final ServiceCategoryManagerInterface manager;
 
     @PostMapping
     public ResponseEntity<ServiceCategoryCreateResult> create(@RequestBody ServiceCategoryCreateParam createParam) {

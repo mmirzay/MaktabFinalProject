@@ -1,6 +1,6 @@
 package com.project.my.homeservicessystem.backend.controllers;
 
-import com.project.my.homeservicessystem.backend.api.HomeServiceInterface;
+import com.project.my.homeservicessystem.backend.api.ServiceManagerInterface;
 import com.project.my.homeservicessystem.backend.api.dto.in.ServiceCreateParam;
 import com.project.my.homeservicessystem.backend.api.dto.in.ServiceUpdateParam;
 import com.project.my.homeservicessystem.backend.api.dto.out.ServiceCreateResult;
@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 @RequestMapping("/services")
 public class ServiceController {
-    private final HomeServiceInterface manager;
+    private final ServiceManagerInterface manager;
 
     @PostMapping
     public ResponseEntity<ServiceCreateResult> create(@RequestBody ServiceCreateParam createParam) {
